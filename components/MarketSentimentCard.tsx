@@ -6,37 +6,40 @@ import { TrendingUp, TrendingDown, Flame } from 'lucide-react'
 interface MarketSentimentCardProps {
   volatility: number // 0-100
   trend24h: number // positive or negative
-  sentiment: 'calm' | 'windy' | 'storm'
+  sentiment: 'extreme-fear' | 'fear' | 'neutral' | 'greed' | 'extreme-greed'
 }
 
 const sentimentConfig = {
-  calm: { color: '#86EFB0', label: 'Calm', description: 'Low volatility' },
-  windy: { color: '#FBBF24', label: 'Windy', description: 'Moderate volatility' },
-  storm: { color: '#FCA5A5', label: 'Storm', description: 'High volatility' },
+  'extreme-fear': { color: '#DC2626', label: 'Extreme Fear', score: 10 },
+  'fear': { color: '#F97316', label: 'Fear', score: 35 },
+  'neutral': { color: '#FBBF24', label: 'Neutral', score: 50 },
+  'greed': { color: '#84CC16', label: 'Greed', score: 75 },
+  'extreme-greed': { color: '#22C55E', label: 'Extreme Greed', score: 90 },
 }
 
 export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketSentimentCardProps) {
   const config = sentimentConfig[sentiment]
+  const score = config.score
 
   return (
     <div className="w-full bg-card border border-border rounded-3xl p-6 card-shadow">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wide mb-1">
-            Market Sentiment
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1">
+            Market Sentiment Analysis
           </h3>
-          <h2 className="text-3xl font-bold text-foreground">{config.label}</h2>
+          <h2 className="text-2xl font-bold text-foreground">{config.label}</h2>
         </div>
         <div className="text-right">
-          <div className="flex items-center gap-1 justify-end mb-2">
+          <div className="flex items-center gap-1 justify-end mb-1">
             {trend24h >= 0 ? (
-              <TrendingUp className="text-green-500" size={20} fill="currentColor" />
+              <TrendingUp className="text-green-500" size={18} fill="currentColor" />
             ) : (
-              <TrendingDown className="text-red-500" size={20} fill="currentColor" />
+              <TrendingDown className="text-red-500" size={18} fill="currentColor" />
             )}
             <span
-              className={`text-xl font-bold ${
+              className={`text-lg font-bold ${
                 trend24h >= 0 ? 'text-green-500' : 'text-red-500'
               }`}
             >
@@ -48,72 +51,88 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
       </div>
 
       {/* Semi-circle Gauge */}
-      <div className="mb-6">
-        <div className="relative w-full h-24">
-          {/* Background semi-circle */}
+      <div className="mb-4 relative">
+        <div className="relative w-full h-32 flex items-center justify-center">
           <svg
             className="w-full h-full"
-            viewBox="0 0 300 150"
-            preserveAspectRatio="none"
+            viewBox="0 0 200 120"
+            preserveAspectRatio="xMidYMid meet"
           >
+            <defs>
+              {/* Gradient from red (fear) to green (greed) */}
+              <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style={{ stopColor: '#DC2626', stopOpacity: 1 }} />
+                <stop offset="25%" style={{ stopColor: '#F97316', stopOpacity: 1 }} />
+                <stop offset="50%" style={{ stopColor: '#FBBF24', stopOpacity: 1 }} />
+                <stop offset="75%" style={{ stopColor: '#84CC16', stopOpacity: 1 }} />
+                <stop offset="100%" style={{ stopColor: '#22C55E', stopOpacity: 1 }} />
+              </linearGradient>
+            </defs>
+
             {/* Background track */}
             <path
-              d="M 30 140 A 110 110 0 0 1 270 140"
+              d="M 20 100 A 80 80 0 0 1 180 100"
               stroke="currentColor"
-              strokeWidth="20"
+              strokeWidth="16"
               fill="none"
-              className="text-border"
+              className="text-border opacity-30"
             />
 
-            {/* Colored segments */}
+            {/* Colored gauge with gradient */}
             <path
-              d="M 30 140 A 110 110 0 0 1 110 60"
-              stroke="#86EFB0"
-              strokeWidth="20"
+              d="M 20 100 A 80 80 0 0 1 180 100"
+              stroke="url(#gaugeGradient)"
+              strokeWidth="16"
               fill="none"
-              opacity="0.3"
-            />
-            <path
-              d="M 110 60 A 110 110 0 0 1 190 60"
-              stroke="#FBBF24"
-              strokeWidth="20"
-              fill="none"
-              opacity="0.3"
-            />
-            <path
-              d="M 190 60 A 110 110 0 0 1 270 140"
-              stroke="#FCA5A5"
-              strokeWidth="20"
-              fill="none"
-              opacity="0.3"
+              strokeLinecap="round"
             />
 
             {/* Indicator needle */}
-            <g transform={`translate(150, 140) rotate(${(volatility / 100) * 180 - 90})`}>
+            <g transform={`translate(100, 100) rotate(${(score / 100) * 180 - 90})`}>
               <line
                 x1="0"
                 y1="0"
                 x2="0"
-                y2="-95"
+                y2="-70"
                 stroke={config.color}
-                strokeWidth="4"
+                strokeWidth="3"
                 strokeLinecap="round"
               />
-              <circle cx="0" cy="0" r="6" fill={config.color} />
+              <circle cx="0" cy="0" r="5" fill={config.color} />
+              <circle cx="0" cy="0" r="3" fill="white" className="dark:fill-gray-900" />
             </g>
+
+            {/* Center score */}
+            <text
+              x="100"
+              y="95"
+              textAnchor="middle"
+              className="fill-foreground font-bold"
+              style={{ fontSize: '20px' }}
+            >
+              {score}
+            </text>
+            <text
+              x="100"
+              y="110"
+              textAnchor="middle"
+              className="fill-muted-foreground"
+              style={{ fontSize: '10px' }}
+            >
+              Market Score
+            </text>
           </svg>
         </div>
       </div>
 
       {/* Labels */}
-      <div className="flex justify-between text-xs font-semibold text-muted-foreground px-2">
-        <span>Calm</span>
-        <span>Moderate</span>
-        <span>Storm</span>
-      </div>
+      <div className="flex justify-between text-xs font-semibold text-muted-foreground px-1 mb-4">
+        <span className="text-red-600 dark:text-red-400">Extreme Fear</span>
+        <span className="text-green-600 dark:text-green-400">Extreme Greed</span>
+      </div>     
 
       {/* Volatility Bar */}
-      <div className="mt-6 pt-6 border-t border-border">
+      <div className="pt-4 border-t border-border">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold text-foreground flex items-center gap-2">
             <Flame size={14} className="text-orange-500" />
@@ -123,7 +142,7 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
         </div>
         <div className="h-2 bg-border rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-green-400 via-yellow-400 to-red-400"
+            className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-red-500 via-yellow-400 to-green-500"
             style={{ width: `${volatility}%` }}
           />
         </div>
