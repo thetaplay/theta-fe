@@ -1,0 +1,280 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Primary Colors */
+  --primary: #19e65e;
+  --primary-dark: #14b84b;
+  
+  /* Secondary Colors */
+  --secondary-purple: #E0D4FC;
+  --secondary-blue: #D6E4FF;
+  
+  /* Background & Surface */
+  --background-light: #F8FAFC;
+  --background-dark: #112116;
+  --surface-light: #FFFFFF;
+  --surface-dark: #1a3322;
+  
+  /* Text Colors */
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  
+  /* Legacy design tokens */
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --primary-token: #19e65e;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E0D4FC;
+  --secondary-foreground: #0F172A;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent: #D6E4FF;
+  --accent-foreground: #0F172A;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #19e65e;
+  --chart-1: #19e65e;
+  --chart-2: #3B82F6;
+  --chart-3: #8B5CF6;
+  --chart-4: #EC4899;
+  --chart-5: #F59E0B;
+  --radius: 0.625rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #0F172A;
+  --sidebar-primary: #19e65e;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E0D4FC;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #19e65e;
+}
+
+.dark {
+  --background: #112116;
+  --foreground: #F0FDF4;
+  --card: #1a3322;
+  --card-foreground: #F0FDF4;
+  --popover: #1a3322;
+  --popover-foreground: #F0FDF4;
+  --primary-token: #19e65e;
+  --primary-foreground: #112116;
+  --secondary: #2D5A3D;
+  --secondary-foreground: #F0FDF4;
+  --muted: #2D5A3D;
+  --muted-foreground: #A1D5A0;
+  --accent: #3D7A52;
+  --accent-foreground: #F0FDF4;
+  --destructive: #DC2626;
+  --destructive-foreground: #FEE2E2;
+  --border: #2D5A3D;
+  --input: #2D5A3D;
+  --ring: #19e65e;
+  --chart-1: #19e65e;
+  --chart-2: #60A5FA;
+  --chart-3: #A78BFA;
+  --chart-4: #F472B6;
+  --chart-5: #FBBF24;
+  --sidebar: #112116;
+  --sidebar-foreground: #F0FDF4;
+  --sidebar-primary: #19e65e;
+  --sidebar-primary-foreground: #112116;
+  --sidebar-accent: #2D5A3D;
+  --sidebar-accent-foreground: #F0FDF4;
+  --sidebar-border: #2D5A3D;
+  --sidebar-ring: #19e65e;
+}
+
+@theme inline {
+  --font-sans: 'Poppins', sans-serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary-token);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-purple: var(--secondary-purple);
+  --color-secondary-blue: var(--secondary-blue);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* iOS PWA Specific Styles */
+  html {
+    @apply h-full;
+  }
+  
+  body {
+    @apply h-full overflow-hidden;
+    user-select: none;
+  }
+}
+
+@layer components {
+  /* iOS Glass Morphism Effect */
+  .glass {
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20;
+  }
+  
+  /* iOS Soft Shadow */
+  .soft-shadow {
+    @apply shadow-sm shadow-black/5 dark:shadow-black/20;
+  }
+  
+  /* iOS Safe Area Inset Bottom (for notch devices) */
+  .safe-area-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  }
+  
+  /* iOS Safe Area Inset Top */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* iOS Slider Styling */
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-token);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 3px solid white;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-token);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 3px solid white;
+  }
+
+  /* Hide scrollbar while keeping functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Responsive Container */
+  .responsive-container {
+    @apply w-full mx-auto lg:max-w-6xl;
+  }
+
+  /* Responsive Padding */
+  .responsive-px {
+    @apply px-4 md:px-6 lg:px-8;
+  }
+
+  /* Responsive Padding Top/Bottom */
+  .responsive-py {
+    @apply py-4 md:py-6 lg:py-8;
+  }
+
+  /* Gamification Button Styles */
+  .btn-primary {
+    background: linear-gradient(to bottom, var(--primary-token), var(--primary-dark));
+    @apply text-white font-bold py-3 px-6 rounded-2xl shadow-lg active:shadow-md active:translate-y-1 transition-all duration-150 border-b-4;
+    border-bottom-color: var(--primary-dark);
+    box-shadow: 0 10px 15px -3px rgba(25, 230, 94, 0.3);
+  }
+
+  .btn-primary:active {
+    @apply border-b-2;
+  }
+
+  .btn-secondary {
+    background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+  }
+  
+  .dark .btn-secondary {
+    background: linear-gradient(to bottom, #374151, #1f2937);
+  }
+  
+  .btn-secondary {
+    @apply text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 rounded-xl shadow-md active:shadow-sm active:translate-y-1 transition-all duration-150 border-b-4 border-slate-300 dark:border-slate-900;
+  }
+
+  .btn-secondary:active {
+    @apply border-b-2;
+  }
+
+  .btn-icon {
+    background: linear-gradient(to bottom, rgba(25, 230, 94, 0.2), rgba(25, 230, 94, 0.1));
+    @apply text-primary font-semibold p-2.5 rounded-xl shadow-md active:shadow-sm active:translate-y-0.5 transition-all duration-150;
+  }
+
+  /* Enhanced Card Shadow */
+  .card-shadow {
+    @apply shadow-lg shadow-black/5 dark:shadow-black/20;
+  }
+
+  /* Desktop Optimization */
+  @media (min-width: 1024px) {
+    body {
+      font-size: 16px;
+    }
+  }
+}
