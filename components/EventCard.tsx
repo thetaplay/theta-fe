@@ -39,45 +39,44 @@ export function EventCard({
 
   return (
     <Link href={`/event/${id}`}>
-      <div className="group my-2.5 relative bg-card border border-border rounded-3xl p-4 card-shadow hover:shadow-xl transition-all duration-200 active:scale-95 cursor-pointer">
-        {/* Risk Badge - Top Right */}
-        <div className="flex justify-end mb-3">
+      <div className="group my-2.5 relative bg-card border border-border rounded-3xl p-4 card-shadow hover:shadow-xl transition-all duration-200 active:scale-95 cursor-pointer flex items-center gap-4">
+        {/* Icon/Photo - Left Side */}
+        <div
+          className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center ${containerColor}`}
+        >
+          <div className="text-3xl">{icon}</div>
+        </div>
+
+        {/* Content - Middle (Left Aligned) */}
+        <div className="flex-1 min-w-0">
+          {/* Risk Badge - Top */}
           <span
-            className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${
+            className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide mb-2 ${
               impactColors[impact]
             }`}
           >
             {impact}
           </span>
+          
+          {/* Title */}
+          <h3 className="text-sm font-bold text-foreground truncate">
+            {title}
+          </h3>
+          
+          {/* Predict Description */}
+          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{date}</p>
         </div>
 
-        <div className="flex items-start gap-3">
-          {/* Trade Button - Left Side */}
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-            }}
-            className="btn-icon flex-shrink-0 text-xs font-bold whitespace-nowrap"
-          >
-            Trade
-          </button>
-
-          {/* Content */}
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-foreground truncate">
-              {title}
-            </h3>
-            <p className="text-xs text-muted-foreground mt-1">{date}</p>
-          </div>
-
-          {/* Icon Container - Right Side */}
-          <div
-            className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${containerColor}`}
-          >
-            <div className="text-lg">{icon}</div>
-          </div>
-        </div>
+        {/* Trade Button - Right Side */}
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
+          className="btn-icon flex-shrink-0 text-xs font-bold whitespace-nowrap"
+        >
+          Trade
+        </button>
       </div>
     </Link>
   )

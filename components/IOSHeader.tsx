@@ -2,7 +2,8 @@
 
 import React from "react"
 
-import { ChevronLeft, Bell } from 'lucide-react'
+import { ChevronLeft } from '@/components/sf-symbols'
+import { BellFill } from '@/components/sf-symbols'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -74,7 +75,7 @@ export function IOSHeader({
               rightContent
             ) : (
               <button className="flex items-center justify-center p-2 rounded-full hover:bg-muted transition-colors relative shadow-sm">
-                <Bell size={20} fill="currentColor" />
+                <BellFill size={20} />
               </button>
             )}
           </div>

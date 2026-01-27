@@ -63,7 +63,7 @@ export function BottomTabBar() {
                     {/* Glow effect */}
                     <div className="absolute inset-0 bg-green-500 rounded-full blur-xl opacity-30 group-active:scale-110 transition-transform duration-200" />
                     {/* Button */}
-                    <div className="relative bg-green-500 text-white rounded-full p-4 shadow-xl shadow-green-500/50 group-active:scale-90 transition-transform duration-150">
+                    <div className="relative bg-green-500 text-white rounded-full p-4 group-active:scale-90 transition-transform duration-150">
                       {tab.icon}
                     </div>
                   </div>

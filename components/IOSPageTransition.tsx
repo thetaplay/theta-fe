@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 
@@ -10,13 +10,49 @@ interface IOSPageTransitionProps {
 
 export function IOSPageTransition({ children }: IOSPageTransitionProps) {
   const pathname = usePathname()
+  const prevPathname = useRef<string | null>(null)
+  const direction = useRef<'forward' | 'back' | null>(null)
 
-  // Determine animation direction based on route depth
-  const isDetailPage = pathname.includes('/event/') || pathname.includes('/[id]')
-  const isNoSlideRoute = pathname.includes('/event') || pathname.includes('/learn')
+  useEffect(() => {
+    // Determine navigation direction
+    const prev = prevPathname.current
+    const current = pathname
+    
+    if (prev && current) {
+      const prevIsEventList = prev === '/event'
+      const prevIsEventDetail = /^\/event\/[^/]+$/.test(prev)
+      const currentIsEventList = current === '/event'
+      const currentIsEventDetail = /^\/event\/[^/]+$/.test(current)
+      
+      // Forward: list -> detail or detail -> detail
+      if ((prevIsEventList && currentIsEventDetail) || 
+          (prevIsEventDetail && currentIsEventDetail)) {
+        direction.current = 'forward'
+      }
+      // Back: detail -> list
+      else if (prevIsEventDetail && currentIsEventList) {
+        direction.current = 'back'
+      }
+      // Other navigation
+      else {
+        direction.current = null
+      }
+    }
+    
+    prevPathname.current = pathname
+  }, [pathname])
+
+  // Determine animation direction based on route
+  const isEventDetailPage = /^\/event\/[^/]+$/.test(pathname)
+  const isEventListPage = pathname === '/event'
+  const isLearnPage = pathname === '/learn'
   
-  // No slide transition for event and learn pages - just fade in
-  if (isNoSlideRoute) {
+  // Check if previous page was event-related
+  const prevWasEventRelated = prevPathname.current && 
+    (prevPathname.current === '/event' || /^\/event\/[^/]+$/.test(prevPathname.current))
+  
+  // Learn page: very fast transition (0.001s)
+  if (isLearnPage) {
     return (
       <motion.div
         key={pathname}
@@ -33,12 +69,101 @@ export function IOSPageTransition({ children }: IOSPageTransitionProps) {
     )
   }
   
+  // Event detail page
+  if (isEventDetailPage) {
+    // If coming from non-event page (navbar), no transition
+    if (!prevWasEventRelated) {
+      return (
+        <motion.div
+          key={pathname}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 1 }}
+          transition={{ duration: 0 }}
+          className="w-full h-full"
+        >
+          {children}
+        </motion.div>
+      )
+    }
+    
+    // Forward navigation: slide from right to left
+    return (
+      <motion.div
+        key={pathname}
+        initial={{ 
+          opacity: 0, 
+          x: 300,
+        }}
+        animate={{ 
+          opacity: 1, 
+          x: 0 
+        }}
+        exit={{ 
+          opacity: 0, 
+          x: direction.current === 'back' ? 300 : -300,
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 120,
+          damping: 20,
+          mass: 1.8,
+        }}
+        className="w-full h-full"
+      >
+        {children}
+      </motion.div>
+    )
+  }
+
+  // Event list page
+  if (isEventListPage) {
+    // If coming from non-event page (navbar), no transition
+    if (!prevWasEventRelated) {
+      return (
+        <motion.div
+          key={pathname}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 1 }}
+          transition={{ duration: 0 }}
+          className="w-full h-full"
+        >
+          {children}
+        </motion.div>
+      )
+    }
+    
+    // Back navigation: slide in from left
+    return (
+      <motion.div
+        key={pathname}
+        initial={{ 
+          opacity: direction.current === 'back' ? 0 : 1, 
+          x: direction.current === 'back' ? -300 : 0 
+        }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: direction.current === 'forward' ? -100 : 0 }}
+        transition={{
+          type: 'spring',
+          stiffness: 120,
+          damping: 20,
+          mass: 1.8,
+        }}
+        className="w-full h-full"
+      >
+        {children}
+      </motion.div>
+    )
+  }
+  
+  // Default transition for other pages
   return (
     <motion.div
       key={pathname}
       initial={{ 
         opacity: 0, 
-        x: isDetailPage ? 300 : -300,
+        x: -300,
       }}
       animate={{ 
         opacity: 1, 
@@ -46,7 +171,7 @@ export function IOSPageTransition({ children }: IOSPageTransitionProps) {
       }}
       exit={{ 
         opacity: 0, 
-        x: isDetailPage ? -300 : 300,
+        x: -300,
       }}
       transition={{
         type: 'spring',

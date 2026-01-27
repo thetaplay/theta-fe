@@ -1,15 +1,15 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
 import { IOSHeader } from '@/components/IOSHeader'
 import { MarketSentimentCard } from '@/components/MarketSentimentCard'
-import { Zap, Flame, TrendingUp } from 'lucide-react'
-
-export const metadata = {
-  title: 'Home - Theta Event Predictions',
-}
+import { BoltFill, Flame } from '@/components/sf-symbols'
 
 export default function HomePage() {
+  const router = useRouter()
   return (
-    <div className="w-full h-full flex flex-col">
-      {/* Header with wallet */}
+    <div className="w-full h-screen flex flex-col">
+      {/* Header with wallet - Fixed at top */}
       <IOSHeader
         title="Theta Predictions"
         rightContent={
@@ -21,7 +21,7 @@ export default function HomePage() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-4 md:pt-6">
+      <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 mt-0">
         {/* Highlight Event Card */}
         <div className="mb-6 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-200/20 dark:to-purple-900/20 rounded-3xl blur-xl" />
@@ -38,7 +38,7 @@ export default function HomePage() {
                   FOMC Rate Decision Prediction
                 </h2>
               </div>
-              <Zap className="text-primary" size={24} fill="currentColor" />
+              <BoltFill className="text-primary" size={24} />
             </div>
 
             <p className="text-sm text-muted-foreground mb-4">
@@ -61,7 +61,10 @@ export default function HomePage() {
               </div>
             </div>
 
-            <button className="btn-primary w-full">
+            <button 
+              className="btn-primary w-full"
+              onClick={() => router.push('/trade')}
+            >
               Place Prediction
             </button>
           </div>
@@ -72,7 +75,7 @@ export default function HomePage() {
           <MarketSentimentCard
             volatility={65}
             trend24h={2.3}
-            sentiment="windy"
+            sentiment="greed" 
           />
         </div>
 
@@ -114,7 +117,10 @@ export default function HomePage() {
           <p className="text-sm text-muted-foreground mb-4">
             Start making predictions on upcoming market events and build your reputation.
           </p>
-          <button className="btn-primary w-full">
+          <button 
+            className="btn-primary w-full"
+            onClick={() => router.push('/event')}
+          >
             Explore Events
           </button>
         </div>

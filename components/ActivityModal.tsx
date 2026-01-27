@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, TrendingUp, TrendingDown, Award } from 'lucide-react'
+import { XMark, ArrowtriangleUpFill, ArrowtriangleDownFill, Award } from '@/components/sf-symbols'
 
 interface ActivityData {
   id: number
@@ -60,11 +60,11 @@ export function ActivityModal({
   const getTypeIcon = (type: ActivityData['type']) => {
     switch (type) {
       case 'win':
-        return <TrendingUp className="w-6 h-6" fill="currentColor" />
+        return <ArrowtriangleUpFill className="w-6 h-6" />
       case 'loss':
-        return <TrendingDown className="w-6 h-6" fill="currentColor" />
+        return <ArrowtriangleDownFill className="w-6 h-6" />
       case 'achievement':
-        return <Award className="w-6 h-6" fill="currentColor" />
+        return <Award className="w-6 h-6" />
       default:
         return null
     }
@@ -110,7 +110,7 @@ export function ActivityModal({
                   onClick={onClose}
                   className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors flex-shrink-0"
                 >
-                  <X size={20} className="text-muted-foreground" />
+                  <XMark size={20} />
                 </button>
               </div>
 

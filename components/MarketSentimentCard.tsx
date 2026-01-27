@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react'
-import { TrendingUp, TrendingDown, Flame } from 'lucide-react'
+import { TrendingUp, TrendingDown } from 'lucide-react'
+import { BoltFill, Flame } from '@/components/sf-symbols'
 
 interface MarketSentimentCardProps {
   volatility: number // 0-100
@@ -135,7 +136,7 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
       <div className="pt-4 border-t border-border">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold text-foreground flex items-center gap-2">
-            <Flame size={14} className="text-orange-500" />
+            <Flame size={14} />
             Volatility Index
           </span>
           <span className="text-sm font-bold text-foreground">{volatility}%</span>

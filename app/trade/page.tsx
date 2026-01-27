@@ -2,18 +2,14 @@ import { IOSHeader } from '@/components/IOSHeader'
 import { ArrowUpRight } from 'lucide-react'
 import { ArrowDownLeft } from '@/components/sf-symbols'
 
-export const metadata = {
-  title: 'Trade - Market Predictions',
-}
-
 export default function TradePage() {
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-screen flex flex-col">
       {/* Header */}
       <IOSHeader title="Trade" />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-4 md:pt-6 flex flex-col items-center justify-center gap-8">
+      <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 flex flex-col items-center justify-center gap-8 mt-0">
           {/* Placeholder Icon */}
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
             <ArrowUpRight size={40} className="text-primary" fill="currentColor" />

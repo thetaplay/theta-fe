@@ -1,10 +1,6 @@
 import { IOSHeader } from '@/components/IOSHeader'
-import { BookOpen, Play, Award } from 'lucide-react'
+import { BookFill, PlayFill, Award } from '@/components/sf-symbols'
 import IOSPageTransition from '@/components/IOSPageTransition' // Import IOSPageTransition
-
-export const metadata = {
-  title: 'Learn - Theta Predictions',
-}
 
 export default function LearnPage() {
   const courses = [
@@ -13,7 +9,7 @@ export default function LearnPage() {
       title: 'Web3 Fundamentals',
       description: 'Learn blockchain, smart contracts, and DeFi basics',
       lessons: 8,
-      icon: <BookOpen size={24} />,
+      icon: <BookFill size={24} />,
       color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
     },
     {
@@ -21,7 +17,7 @@ export default function LearnPage() {
       title: 'Event Prediction Strategy',
       description: 'Master predicting crypto and economic events',
       lessons: 12,
-      icon: <Play size={24} />,
+      icon: <PlayFill size={24} />,
       color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
     },
     {
@@ -36,12 +32,12 @@ export default function LearnPage() {
 
   return (
     <IOSPageTransition>
-      <div className="w-full h-full flex flex-col">
+      <div className="w-full h-screen flex flex-col">
         {/* Header */}
         <IOSHeader title="Learn Theta Trading" />
 
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-4 md:pt-6">
+        <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 mt-0">
           {/* Intro Section */}
           <div className="mb-6">
             <h2 className="text-lg font-bold text-foreground mb-2">

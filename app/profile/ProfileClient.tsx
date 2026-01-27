@@ -2,7 +2,7 @@
 
 import { IOSHeader } from '@/components/IOSHeader'
 import { ActivityModal } from '@/components/ActivityModal'
-import { User, TrendingUp, TrendingDown, Award } from 'lucide-react'
+import { PersonFill, ArrowtriangleUpFill, ArrowtriangleDownFill, Award } from '@/components/sf-symbols'
 import { useState } from 'react'
 
 interface Activity {
@@ -81,11 +81,11 @@ export function ProfileClient() {
   const getActivityIcon = (type: Activity['type']) => {
     switch (type) {
       case 'win':
-        return <TrendingUp className="w-5 h-5" fill="currentColor" />
+        return <ArrowtriangleUpFill className="w-5 h-5" />
       case 'loss':
-        return <TrendingDown className="w-5 h-5" fill="currentColor" />
+        return <ArrowtriangleDownFill className="w-5 h-5" />
       case 'achievement':
-        return <Award className="w-5 h-5" fill="currentColor" />
+        return <Award className="w-5 h-5" />
     }
   }
 
@@ -101,17 +101,17 @@ export function ProfileClient() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-screen flex flex-col">
       {/* Header */}
       <IOSHeader title="Trading Portfolio" />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-4 md:pt-6">
+      <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 mt-0">
         {/* Profile Card */}
         <div className="mb-8 bg-card border border-border rounded-3xl p-6 card-shadow">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-              <User size={32} className="text-primary" fill="currentColor" />
+              <PersonFill size={32} />
             </div>
             <div className="flex-1">
               <h2 className="text-xl font-bold text-foreground">

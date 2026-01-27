@@ -4,7 +4,7 @@ import React from "react"
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { IOSHeader } from '@/components/IOSHeader'
-import { TrendingUp, TrendingDown, AlertCircle } from 'lucide-react'
+import { ArrowtriangleUpFill, ArrowtriangleDownFill, ExclamationmarkCircle } from '@/components/sf-symbols'
 import IOSPageTransition from '@/components/IOSPageTransition'
 
 interface PredictionOption {
@@ -16,12 +16,12 @@ interface PredictionOption {
 const PREDICTION_OPTIONS: PredictionOption[] = [
   {
     label: 'High Volatility',
-    icon: <TrendingUp size={24} fill="currentColor" />,
+    icon: <ArrowtriangleUpFill size={24} />,
     description: 'Market will be very volatile',
   },
   {
     label: 'Low Volatility',
-    icon: <TrendingDown size={24} fill="currentColor" />,
+    icon: <ArrowtriangleDownFill size={24} />,
     description: 'Market will be stable',
   },
 ]
@@ -89,7 +89,7 @@ export default function EventDetailPage() {
 
   return (
     <IOSPageTransition>
-      <div className="w-full h-full flex flex-col">
+      <div className="w-full h-screen flex flex-col">
         {/* Header */}
         <IOSHeader
           title={event.title}
@@ -103,7 +103,7 @@ export default function EventDetailPage() {
         />
 
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-4 md:pt-6">
+        <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 mt-0">
           {/* Event Date */}
           <p className="text-sm text-muted-foreground text-center mb-6">
             {event.date}
@@ -215,7 +215,7 @@ export default function EventDetailPage() {
 
           {/* Info Note */}
           <div className="bg-secondary-blue/10 border border-secondary-blue/20 rounded-2xl p-4 flex gap-3 mb-8">
-            <AlertCircle size={20} className="text-secondary-blue flex-shrink-0 mt-0.5" />
+            <ExclamationmarkCircle size={20} className="text-secondary-blue flex-shrink-0 mt-0.5" />
             <p className="text-xs text-foreground">
               Your prediction will be locked in when submitted. You can view results after the event occurs.
             </p>
