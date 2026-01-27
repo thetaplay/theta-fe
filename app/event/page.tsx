@@ -1,77 +1,70 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IOSHeader } from '@/components/IOSHeader'
 import { EventCard } from '@/components/EventCard'
 import { CategoryPills } from '@/components/CategoryPills'
 import { BoltFill, DollarsignCircleFill, ChartLineUptrendXyaxis, Magnifyingglass, BellFill } from '@/components/sf-symbols'
 import IOSPageTransition from '@/components/IOSPageTransition'
 
+import { supabase } from '@/lib/supabaseClient'
 const CATEGORIES = ['All', 'Crypto Events', 'Economic Events', 'Web3']
+type DbEvent = {
+  id: string
+  slug: string | null
+  title: string
+  category: string
+  date: string | null
+  impact: string | null
+  icon: string | null
+}
 
-const EVENTS = [
-  {
-    id: '1',
-    icon: <BoltFill size={24} />,
-    title: 'Bitcoin ETF Approval Price Surge',
-    date: 'Predict: BTC above $48k by Feb 1',
-    impact: 'High' as const,
-    category: 'Crypto Events',
-  },
-  {
-    id: '2',
-    icon: <ChartLineUptrendXyaxis size={24} />,
-    title: 'FOMC Interest Rate Decision',
-    date: 'Predict: Rate cut vs Hold vs Hike - Jan 29',
-    impact: 'High' as const,
-    category: 'Economic Events',
-  },
-  {
-    id: '3',
-    icon: <BoltFill size={24} />,
-    title: 'Ethereum Shanghai Upgrade Impact',
-    date: 'Predict: ETH price movement post-upgrade',
-    impact: 'Medium' as const,
-    category: 'Web3',
-  },
-  {
-    id: '4',
-    icon: <DollarsignCircleFill size={24} />,
-    title: 'US GDP Growth Report',
-    date: 'Predict: Growth rate - Feb 29',
-    impact: 'Medium' as const,
-    category: 'Economic Events',
-  },
-  {
-    id: '5',
-    icon: <BoltFill size={24} />,
-    title: 'Solana Network Performance',
-    date: 'Predict: TPS above 10k vs below',
-    impact: 'Low' as const,
-    category: 'Web3',
-  },
-  {
-    id: '6',
-    icon: <ChartLineUptrendXyaxis size={24} />,
-    title: 'Fed Inflation CPI Release',
-    date: 'Predict: Inflation rate - Mar 1',
-    impact: 'Medium' as const,
-    category: 'Economic Events',
-  },
-]
+const iconFromName = (name?: string | null) => {
+  switch (name) {
+    case 'BoltFill':
+      return <BoltFill size={24} />
+    case 'ChartLineUptrendXyaxis':
+      return <ChartLineUptrendXyaxis size={24} />
+    case 'DollarsignCircleFill':
+      return <DollarsignCircleFill size={24} />
+    default:
+      return <BoltFill size={24} />
+  }
+}
 
 export default function EventPage() {
   const [activeCategory, setActiveCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
+  const [events, setEvents] = useState<DbEvent[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const filteredEvents = EVENTS.filter((event) => {
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('events')
+        .select('id, slug, title, category, date, impact, icon')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        setError(error.message)
+      } else {
+        setEvents(data ?? [])
+      }
+      setLoading(false)
+    }
+    fetchEvents()
+  }, [])
+
+  const filteredEvents = useMemo(() => events.filter((event) => {
     const matchesCategory =
       activeCategory === 'All' || event.category === activeCategory
     const matchesSearch = event.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
-  })
+  }), [events, activeCategory, searchQuery])
 
   return (
     <IOSPageTransition>
@@ -114,16 +107,34 @@ export default function EventPage() {
 
           {/* Events List */}
           <div className="space-y-3">
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((event) => (
-                <EventCard key={event.id} {...event} />
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-sm">
-                  No events found matching your search
-                </p>
+            {loading ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground text-sm">Loading events...</p>
               </div>
+            ) : error ? (
+              <div className="text-center py-8">
+                <p className="text-red-600 dark:text-red-400 text-sm">Failed to load events: {error}</p>
+              </div>
+            ) : (
+              filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    id={event.id}
+                    icon={iconFromName(event.icon)}
+                    title={event.title}
+                    date={event.date ?? ''}
+                    impact={(event.impact ?? 'Medium') as 'Low' | 'Medium' | 'High'}
+                    category={event.category}
+                  />
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground text-sm">
+                    No events found matching your search
+                  </p>
+                </div>
+              )
             )}
           </div>
         </div>

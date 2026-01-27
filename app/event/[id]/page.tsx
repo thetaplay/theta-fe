@@ -3,6 +3,8 @@
 import React from "react"
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { supabase } from '@/lib/supabaseClient'
 import { IOSHeader } from '@/components/IOSHeader'
 import { ArrowtriangleUpFill, ArrowtriangleDownFill, ExclamationmarkCircle } from '@/components/sf-symbols'
 import IOSPageTransition from '@/components/IOSPageTransition'
@@ -26,50 +28,41 @@ const PREDICTION_OPTIONS: PredictionOption[] = [
   },
 ]
 
-const EVENT_DETAILS = {
-  '1': {
-    title: 'Federal Reserve Rate Decision',
-    category: 'Macro',
-    date: 'Jan 29, 2:00 PM EST',
-    question: 'Will the Fed raise interest rates?',
-    whyItMatters: [
-      'Affects mortgage rates and borrowing costs',
-      'Could impact stock and bond markets',
-      'Inflation control policy indicator',
-      'Global economic sentiment driver',
-    ],
-  },
-  '2': {
-    title: 'Bitcoin Halving Event',
-    category: 'Crypto',
-    date: 'Feb 15, 12:00 AM UTC',
-    question: 'How will Bitcoin price react?',
-    whyItMatters: [
-      'Supply of new Bitcoin will be cut in half',
-      'Historical catalyst for price movements',
-      'Impact on mining economics',
-      'Broader crypto market sentiment',
-    ],
-  },
-  '3': {
-    title: 'Apple Q1 Earnings Report',
-    category: 'Corporate',
-    date: 'Jan 30, 4:30 PM EST',
-    question: 'Will Apple beat earnings estimates?',
-    whyItMatters: [
-      'Major indicator of tech sector health',
-      'Affects AAPL stock and market indices',
-      'Consumer spending trends signal',
-      'Guidance for next quarter important',
-    ],
-  },
+type DbEventDetail = {
+  id: string
+  title: string
+  category: string
+  date: string | null
+  question: string | null
+  why_it_matters: string[] | null
 }
 
 export default function EventDetailPage() {
   const params = useParams()
   const router = useRouter()
   const eventId = params.id as string
-  const event = EVENT_DETAILS[eventId as keyof typeof EVENT_DETAILS] || EVENT_DETAILS['1']
+  const [event, setEvent] = useState<DbEventDetail | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('events')
+        .select('id, title, category, date, question, why_it_matters')
+        .eq('id', eventId)
+        .maybeSingle()
+
+      if (error) {
+        setError(error.message)
+      } else {
+        setEvent(data as unknown as DbEventDetail)
+      }
+      setLoading(false)
+    }
+    if (eventId) fetchEvent()
+  }, [eventId])
 
   const [selectedPrediction, setSelectedPrediction] = useState<string | null>(null)
   const [confidence, setConfidence] = useState(50)
@@ -92,8 +85,8 @@ export default function EventDetailPage() {
       <div className="w-full h-screen flex flex-col">
         {/* Header */}
         <IOSHeader
-          title={event.title}
-          subtitle={event.date}
+          title={event?.title ?? 'Event'}
+          subtitle={event?.date ?? ''}
           showBack
           onBack={() => router.back()}
           rightContent={<div />}
@@ -107,7 +100,7 @@ export default function EventDetailPage() {
               Why It Matters
             </h2>
             <div className="bg-card border border-border rounded-3xl p-5 space-y-3">
-              {event.whyItMatters.map((point, index) => (
+              {event?.why_it_matters?.map((point, index) => (
                 <div key={index} className="flex gap-3">
                   <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
                     <span className="text-xs font-bold text-primary">
@@ -125,7 +118,7 @@ export default function EventDetailPage() {
           {/* Prediction Section */}
           <div className="mb-8">
             <h2 className="text-lg font-bold text-foreground mb-4 text-center">
-              {event.question}
+              {event?.question ?? ''}
             </h2>
 
             {/* Prediction Options */}
