@@ -11,7 +11,7 @@ export default function HomePage() {
     <div className="w-full h-screen flex flex-col">
       {/* Header with wallet - Fixed at top */}
       <IOSHeader
-        title="Theta Predictions"
+        title="Theta Play"
         rightContent={
           <div className="px-3 py-1.5 rounded-full bg-muted text-xs font-medium flex items-center gap-1 whitespace-nowrap">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
