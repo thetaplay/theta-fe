@@ -78,7 +78,7 @@ export default function EventPage() {
       <div className="w-full h-screen flex flex-col">
         {/* Header */}
         <IOSHeader
-          title="Event Predictions"
+          title="Events"
           rightContent={
             <button className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center shadow-md active:scale-95 transition-transform">
               <BellFill size={20} />

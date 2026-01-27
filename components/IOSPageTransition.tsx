@@ -105,9 +105,9 @@ export function IOSPageTransition({ children }: IOSPageTransitionProps) {
         }}
         transition={{
           type: 'spring',
-          stiffness: 120,
-          damping: 20,
-          mass: 1.8,
+          stiffness: 30,
+          damping: 30,
+          mass: 5,
         }}
         className="w-full h-full"
       >
@@ -118,38 +118,15 @@ export function IOSPageTransition({ children }: IOSPageTransitionProps) {
 
   // Event list page
   if (isEventListPage) {
-    // If coming from non-event page (navbar), no transition
-    if (!prevWasEventRelated) {
-      return (
-        <motion.div
-          key={pathname}
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 1 }}
-          transition={{ duration: 0 }}
-          className="w-full h-full"
-        >
-          {children}
-        </motion.div>
-      )
-    }
-    
-    // Back navigation: slide in from left
+    // Event list should ALWAYS stay static (no movement)
+    // Only the detail page moves on top of it
     return (
       <motion.div
         key={pathname}
-        initial={{ 
-          opacity: direction.current === 'back' ? 0 : 1, 
-          x: direction.current === 'back' ? -300 : 0 
-        }}
+        initial={{ opacity: 1, x: 0 }}
         animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: direction.current === 'forward' ? -100 : 0 }}
-        transition={{
-          type: 'spring',
-          stiffness: 120,
-          damping: 20,
-          mass: 1.8,
-        }}
+        exit={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0 }}
         className="w-full h-full"
       >
         {children}

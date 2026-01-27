@@ -64,7 +64,7 @@ export function AnimatedLayout({ children }: AnimatedLayoutProps) {
       {/* Main content area with responsive padding */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
         <div className="mx-auto w-full h-full lg:max-w-6xl">
-          <AnimatePresence mode="wait">
+          <AnimatePresence initial={false}>
             {children}
           </AnimatePresence>
         </div>

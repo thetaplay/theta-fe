@@ -43,7 +43,7 @@ export function IOSHeader({
       <div className="px-4 md:px-6 lg:px-8 py-3 safe-area-top w-full">
         <div className="flex items-center justify-between gap-3">
           {/* Left Section */}
-          <div className="flex items-center gap-2 flex-1 min-w-0">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             {showBack && (
               <button
                 onClick={handleBack}
@@ -52,13 +52,13 @@ export function IOSHeader({
                 <ChevronLeft size={24} strokeWidth={2} fill="currentColor" />
               </button>
             )}
-            {!showBack && title && (
-              <div className="min-w-0">
+            {title && (
+              <div className="min-w-0 flex-1">
                 <h1 className="text-xl font-bold text-foreground truncate">
                   {title}
                 </h1>
                 {subtitle && (
-                  <p className="text-xs text-muted-foreground truncate">
+                  <p className="text-xs text-muted-foreground font-normal truncate">
                     {subtitle}
                   </p>
                 )}
@@ -80,16 +80,6 @@ export function IOSHeader({
             )}
           </div>
         </div>
-
-        {/* Centered Title (for detail pages) */}
-        {showBack && title && centerContent === undefined && (
-          <div className="text-center mt-2">
-            <h1 className="text-lg font-bold text-foreground">{title}</h1>
-            {subtitle && (
-              <p className="text-xs text-muted-foreground">{subtitle}</p>
-            )}
-          </div>
-        )}
       </div>
     </div>
   )
