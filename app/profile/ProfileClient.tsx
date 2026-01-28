@@ -2,6 +2,9 @@
 
 import { IOSHeader } from '@/components/IOSHeader'
 import { useState } from 'react'
+import { Calendar, BellFill, ArrowtriangleDownFill, ArrowtriangleUpFill, StarFill, Shield, ChartLineUptrendXyaxis, WaterDrop, XMark } from '@/components/sf-symbols'
+
+import { ReactNode } from 'react'
 
 interface Position {
   id: string
@@ -12,6 +15,7 @@ interface Position {
   icon: string
   iconBg: string
   iconColor: string
+  sfIcon?: ReactNode | typeof StarFill
   expiredDate?: string
   asset?: string
   expiryDate?: string
@@ -35,6 +39,7 @@ const positions: Position[] = [
     icon: 'shield',
     iconBg: 'bg-secondary-blue/30 dark:bg-blue-900/20',
     iconColor: 'text-blue-600 dark:text-blue-400',
+    sfIcon: Shield,
   },
   {
     id: '2',
@@ -45,6 +50,7 @@ const positions: Position[] = [
     icon: 'trending_up',
     iconBg: 'bg-secondary-purple/30 dark:bg-purple-900/20',
     iconColor: 'text-purple-600 dark:text-purple-400',
+    sfIcon: ChartLineUptrendXyaxis,
   },
   {
     id: '3',
@@ -55,11 +61,28 @@ const positions: Position[] = [
     icon: 'water_drop',
     iconBg: 'bg-primary/10 dark:bg-primary/20',
     iconColor: 'text-primary-dark dark:text-primary',
+    sfIcon: WaterDrop,
   },
 ]
 
 export function ProfileClient() {
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(null)
+  const [activeTab, setActiveTab] = useState<'all' | 'running' | 'end'>('all')
+  const [isClosing, setIsClosing] = useState(false)
+
+  const handleCloseModal = () => {
+    setIsClosing(true)
+    setTimeout(() => {
+      setSelectedPosition(null)
+      setIsClosing(false)
+    }, 300)
+  }
+
+  const filteredPositions = positions.filter((position) => {
+    if (activeTab === 'running') return position.status === 'active'
+    if (activeTab === 'end') return position.status === 'settled' || position.status === 'settling'
+    return true
+  })
 
   const getStatusBadge = (status: Position['status']) => {
     if (status === 'active') {
@@ -89,17 +112,47 @@ export function ProfileClient() {
       {/* Header */}
       <IOSHeader
         title="Active Positions"
-        subtitle="3 running trades"
-        rightContent={
-          <button className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center shadow-sm">
-            <span className="material-symbols-outlined text-muted-foreground">history</span>
-          </button>
-        }
       />
 
+      {/* Filter Tabs */}
+      <div className="px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 pb-3">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
+              activeTab === 'all'
+                ? 'bg-green-500 text-white shadow-md shadow-green-500/50'
+                : 'bg-muted text-foreground border border-border'
+            }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setActiveTab('running')}
+            className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
+              activeTab === 'running'
+                ? 'bg-green-500 text-white shadow-md shadow-green-500/50'
+                : 'bg-muted text-foreground border border-border'
+            }`}
+          >
+            Running
+          </button>
+          <button
+            onClick={() => setActiveTab('end')}
+            className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
+              activeTab === 'end'
+                ? 'bg-green-500 text-white shadow-md shadow-green-500/50'
+                : 'bg-muted text-foreground border border-border'
+            }`}
+          >
+            End
+          </button>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 mt-0 space-y-4">
-        {positions.map((position) => (
+      <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 space-y-4">
+        {filteredPositions.map((position) => (
           <div
             key={position.id}
             onClick={() => setSelectedPosition(position)}
@@ -109,19 +162,22 @@ export function ProfileClient() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <h3 className="text-lg font-bold text-foreground">{position.title}</h3>
-                  {getStatusBadge(position.status)}
                 </div>
                 {position.endsIn && (
                   <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium">
-                    <span className="material-symbols-outlined text-sm">schedule</span>
+                    <Calendar size={14} />
                     <span>Ends in {position.endsIn}</span>
                   </div>
                 )}
               </div>
               <div className={`p-2 rounded-2xl ${position.iconBg}`}>
-                <span className={`material-symbols-outlined ${position.iconColor}`}>
-                  {position.icon}
-                </span>
+                {position.sfIcon && typeof position.sfIcon === 'function' ? (
+                  <position.sfIcon className={position.iconColor} size={20} />
+                ) : (
+                  <span className={`material-symbols-outlined ${position.iconColor}`}>
+                    {position.icon}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -139,7 +195,7 @@ export function ProfileClient() {
                 }}
                 className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-muted text-muted-foreground text-xs font-bold border-b-4 border-border active:border-b-0 active:translate-y-[2px] transition-all"
               >
-                <span className="material-symbols-outlined text-sm">lightbulb</span>
+                <StarFill size={14} />
                 Explain
               </button>
               <button
@@ -148,20 +204,12 @@ export function ProfileClient() {
                 }}
                 className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-muted text-muted-foreground text-xs font-bold border-b-4 border-border active:border-b-0 active:translate-y-[2px] transition-all"
               >
-                <span className="material-symbols-outlined text-sm">notifications</span>
+                <BellFill size={14} />
                 Set alerts
               </button>
             </div>
           </div>
         ))}
-
-        {/* Empty state */}
-        <div className="py-6 flex flex-col items-center justify-center gap-2">
-          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-            <span className="material-symbols-outlined text-muted-foreground">rocket_launch</span>
-          </div>
-          <p className="text-muted-foreground text-sm font-medium">You're doing great!</p>
-        </div>
       </div>
 
       {/* Modal Detail */}
@@ -169,12 +217,14 @@ export function ProfileClient() {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/20 dark:bg-black/60 z-40"
-            onClick={() => setSelectedPosition(null)}
+            className="fixed inset-0 bg-black/20 dark:bg-black/60 z-[100]"
+            onClick={handleCloseModal}
           />
 
           {/* Modal */}
-          <div className="fixed bottom-0 left-0 right-0 bg-card rounded-t-[2.5rem] shadow-2xl z-50 flex flex-col max-h-[90%] overflow-hidden">
+          <div className={`fixed bottom-0 left-0 right-0 bg-card rounded-t-[2.5rem] shadow-2xl z-[101] flex flex-col max-h-[90%] overflow-hidden transition-transform duration-300 ${
+            isClosing ? 'translate-y-full' : 'translate-y-0'
+          }`}>
             {/* Handle Bar */}
             <div className="flex justify-center pt-3 pb-2">
               <div className="w-10 h-1.5 bg-muted rounded-full"></div>
@@ -182,27 +232,35 @@ export function ProfileClient() {
 
             {/* Content */}
             <div className="px-6 pb-10 overflow-y-auto">
-              <div className="flex items-start justify-between mb-6">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-2xl font-extrabold text-foreground">
-                      {selectedPosition.title}
-                    </h2>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-2xl ${selectedPosition.iconBg}`}>
+                    {selectedPosition.sfIcon && typeof selectedPosition.sfIcon === 'function' ? (
+                      <selectedPosition.sfIcon className={selectedPosition.iconColor} size={32} />
+                    ) : (
+                      <span className={`material-symbols-outlined text-3xl ${selectedPosition.iconColor}`}>
+                        {selectedPosition.icon}
+                      </span>
+                    )}
                   </div>
-                  {getStatusBadge(selectedPosition.status)}
+                  <h2 className="text-2xl font-extrabold text-foreground">
+                    {selectedPosition.title}
+                  </h2>
                 </div>
-                <div className={`p-3 rounded-2xl ${selectedPosition.iconBg}`}>
-                  <span className={`material-symbols-outlined text-3xl ${selectedPosition.iconColor}`}>
-                    {selectedPosition.icon}
-                  </span>
-                </div>
+                <button
+                  onClick={handleCloseModal}
+                  className="p-2.5 bg-muted/80 hover:bg-muted rounded-full transition-colors border border-border"
+                  aria-label="Close"
+                >
+                  <XMark size={24} className="text-foreground" />
+                </button>
               </div>
 
               {/* Settling Info */}
               {selectedPosition.status === 'settling' && (
                 <div className="bg-secondary-blue/10 border border-secondary-blue/20 rounded-3xl p-5 mb-6 flex items-start gap-4">
                   <div className="w-10 h-10 shrink-0 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center">
-                    <span className="material-symbols-outlined text-blue-600 dark:text-blue-300">info</span>
+                    <StarFill size={20} className="text-blue-600 dark:text-blue-300" />
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground mb-1">Expired — settling in progress</h4>
@@ -240,23 +298,16 @@ export function ProfileClient() {
               </div>
 
               {/* Actions */}
-              <div className="grid grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-1 gap-3 pt-2">
                 <button className="flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-2xl bg-muted text-foreground border-b-4 border-border active:border-b-0 active:translate-y-[2px] transition-all">
-                  <span className="material-symbols-outlined">lightbulb</span>
+                  <StarFill size={20} />
                   <span className="text-xs font-bold">Explain this position</span>
                 </button>
                 <button className="flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-2xl bg-muted text-foreground border-b-4 border-border active:border-b-0 active:translate-y-[2px] transition-all">
-                  <span className="material-symbols-outlined">notifications</span>
+                  <BellFill size={20} />
                   <span className="text-xs font-bold">Set alerts</span>
                 </button>
               </div>
-
-              <button
-                onClick={() => setSelectedPosition(null)}
-                className="w-full mt-6 py-4 bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-2xl font-extrabold text-sm shadow-lg border-b-4 border-slate-950 dark:border-primary-dark active:border-b-0 active:translate-y-[2px] transition-all"
-              >
-                Got it
-              </button>
             </div>
           </div>
         </>
