@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import IOSPageTransition from '@/components/IOSPageTransition'
 
-type TradeStep = 'goal' | 'risk' | 'strategy' | 'preview' | 'success'
+type TradeStep = 'goal' | 'risk' | 'strategy' | 'preview' | 'options' | 'success'
 
 const GOALS = [
   {
@@ -84,15 +84,16 @@ export default function TradePage() {
 
   const handleContinue = () => {
     if (step === 'goal' && selectedGoal) setStep('risk')
-    else if (step === 'risk' && selectedRisk && tradeAmount) setStep('strategy')
+    else if (step === 'risk' && selectedRisk) setStep('strategy')
     else if (step === 'strategy' && selectedStrategy) setStep('preview')
-    else if (step === 'preview' && agreedToTerms) setStep('success')
+    else if (step === 'preview' && agreedToTerms) setStep('options')
   }
 
   const handleBack = () => {
     if (step === 'risk') setStep('goal')
     else if (step === 'strategy') setStep('risk')
     else if (step === 'preview') setStep('strategy')
+    else if (step === 'options') setStep('preview')
   }
 
   const getStepNumber = () => {
@@ -101,6 +102,7 @@ export default function TradePage() {
       case 'risk': return 2
       case 'strategy': return 3
       case 'preview': return 4
+      case 'options': return 4
       default: return 0
     }
   }
@@ -113,30 +115,31 @@ export default function TradePage() {
   if (step === 'goal') {
     return (
       <IOSPageTransition>
-        <div className="w-full h-screen flex flex-col bg-slate-50">
+        <div className="fixed inset-0 w-screen h-screen flex flex-col bg-slate-50 z-[9999]">
           {/* Header with Progress */}
-          <div className="px-6 pt-12 pb-6">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary rounded-full transition-all duration-500"
-                  style={{ width: getProgressWidth() }}
-                ></div>
+          <div className="px-6 pt-6 pb-4 flex items-center justify-between sticky top-0 bg-white/95 border-b border-slate-100 z-10">
+            <div className="w-10"></div>
+            <div className="flex-1 px-4">
+              <div className="flex gap-1 justify-center">
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
               </div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                Step 1 of 3
-              </span>
             </div>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-bold"
+            >
+              ✕
+            </button>
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto px-6 pt-4 pb-24">
-            <div className="text-center mb-10">
-              <div className="w-24 h-24 mx-auto mb-6 bg-blue-50 rounded-full flex items-center justify-center text-5xl">
-                💭
-              </div>
-              <h1 className="text-3xl font-extrabold text-slate-900 mb-2">What's your goal?</h1>
-              <p className="text-slate-500 font-medium">I'll help you find the best strategy.</p>
+          <div className="flex-1 overflow-y-auto px-6 pt-6 pb-32">
+            <div className="mb-8">
+              <h2 className="text-2xl font-extrabold text-slate-900 leading-tight mb-2">What's your goal?</h2>
+              <p className="text-sm font-medium text-slate-500">I'll help you find the best strategy.</p>
             </div>
 
             <div className="space-y-4">
@@ -157,11 +160,6 @@ export default function TradePage() {
                     <h4 className="text-lg font-extrabold text-slate-900 leading-tight">{goal.title}</h4>
                     <p className="text-sm font-medium text-slate-500 mt-1">{goal.description}</p>
                   </div>
-                  {selectedGoal === goal.id && (
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                      <span className="text-slate-900 font-bold">✓</span>
-                    </div>
-                  )}
                 </button>
               ))}
             </div>
@@ -174,7 +172,7 @@ export default function TradePage() {
               disabled={!selectedGoal}
               className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-200 text-slate-900 disabled:text-slate-400 font-extrabold py-5 rounded-2xl shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              Continue →
+              Continue
             </button>
           </div>
         </div>
@@ -185,7 +183,7 @@ export default function TradePage() {
   if (step === 'risk') {
     return (
       <IOSPageTransition>
-        <div className="w-full h-screen flex flex-col bg-slate-50">
+        <div className="fixed inset-0 w-screen h-screen flex flex-col bg-slate-50 z-[9999]">
           {/* Header */}
           <div className="px-6 pt-6 pb-4 flex items-center justify-between sticky top-0 bg-white/95 border-b border-slate-100 z-10">
             <button
@@ -194,15 +192,20 @@ export default function TradePage() {
             >
               ←
             </button>
-            <div className="flex-1 px-8">
-              <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary rounded-full transition-all"
-                  style={{ width: '50%' }}
-                ></div>
+            <div className="flex-1 px-4">
+              <div className="flex gap-1 justify-center">
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
               </div>
             </div>
-            <span className="text-sm font-bold text-slate-400 w-10 text-right">2/4</span>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-bold"
+            >
+              ✕
+            </button>
           </div>
 
           {/* Content */}
@@ -233,45 +236,22 @@ export default function TradePage() {
                     <h3 className="font-bold text-slate-900">{risk.title}</h3>
                     <p className="text-xs text-slate-500 mt-0.5">{risk.description}</p>
                   </div>
-                  {selectedRisk === risk.id && (
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                      <span className="text-slate-900 font-bold">✓</span>
-                    </div>
-                  )}
                 </button>
               ))}
             </div>
 
-            {/* Amount Input */}
-            <div className="bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-soft">
-              <label className="block text-sm font-extrabold text-slate-900 mb-3">Amount to trade</label>
-              <div className="relative flex items-center mb-3">
-                <span className="absolute left-4 text-2xl font-bold text-slate-900">$</span>
-                <input
-                  type="text"
-                  value={tradeAmount}
-                  onChange={(e) => setTradeAmount(e.target.value)}
-                  placeholder="0.00"
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-lg font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary transition-colors"
-                />
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-slate-400">Available: $10,000.00</span>
-                <span className="text-primary font-bold">{tradeAmount ? `$${tradeAmount}` : '$0.00'}</span>
-              </div>
-            </div>
+
           </div>
 
           {/* Footer */}
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-50">
             <button
               onClick={handleContinue}
-              disabled={!selectedRisk || !tradeAmount}
+              disabled={!selectedRisk}
               className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-200 text-slate-900 disabled:text-slate-400 font-extrabold py-5 rounded-2xl shadow-xl transition-all active:scale-95"
             >
               Continue
             </button>
-            <p className="text-center mt-4 text-xs font-medium text-slate-400">Step 2 of the guided setup</p>
           </div>
         </div>
       </IOSPageTransition>
@@ -281,7 +261,7 @@ export default function TradePage() {
   if (step === 'strategy') {
     return (
       <IOSPageTransition>
-        <div className="w-full h-screen flex flex-col bg-white">
+        <div className="fixed inset-0 w-screen h-screen flex flex-col bg-white z-[9999]">
           {/* Header */}
           <div className="p-4 bg-white flex items-center justify-between sticky top-0 z-10 border-b border-slate-100">
             <button
@@ -290,26 +270,27 @@ export default function TradePage() {
             >
               ←
             </button>
-            <div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Step 3 of 4</span>
-              <div className="flex gap-1">
-                <div className="h-1.5 w-4 rounded-full bg-primary"></div>
-                <div className="h-1.5 w-4 rounded-full bg-primary"></div>
-                <div className="h-1.5 w-8 rounded-full bg-primary"></div>
-                <div className="h-1.5 w-4 rounded-full bg-slate-200"></div>
+            <div className="flex-1">
+              <div className="flex gap-1 justify-center">
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
               </div>
             </div>
-            <div className="w-10"></div>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 font-bold"
+            >
+              ✕
+            </button>
           </div>
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto p-6 pb-32">
             <div className="text-center space-y-2 mb-8">
-              <div className="inline-flex items-center gap-2 bg-purple-100 px-3 py-1 rounded-full mb-1">
-                <span className="text-[10px] font-black uppercase tracking-wider text-purple-600">✨ AI Recommended</span>
-              </div>
-              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Choose your protection</h1>
-              <p className="text-slate-500 font-medium">Pick the strategy that fits your goal</p>
+              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Which protection strategy suits your needs?</h1>
+              <p className="text-slate-500 font-medium">AI recommended based on your profile</p>
             </div>
 
             <div className="space-y-4">
@@ -327,9 +308,8 @@ export default function TradePage() {
                     {strategy.icon}
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="mb-1">
                       <h3 className="text-lg font-black text-slate-900 leading-tight">{strategy.title}</h3>
-                      {selectedStrategy === strategy.id && <span className="text-primary">✓</span>}
                     </div>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{strategy.subtitle}</p>
                     <p className="text-sm font-medium text-slate-600 mt-2 leading-snug">{strategy.description}</p>
@@ -346,12 +326,8 @@ export default function TradePage() {
               disabled={!selectedStrategy}
               className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-200 text-slate-900 disabled:text-slate-400 py-5 rounded-2xl font-black text-lg shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              Continue →
+              Continue
             </button>
-            <div className="flex items-center justify-center gap-2">
-              <span>⚡</span>
-              <p className="text-center text-slate-500 text-[10px] font-black uppercase tracking-widest">Fast execution enabled</p>
-            </div>
           </div>
         </div>
       </IOSPageTransition>
@@ -361,17 +337,29 @@ export default function TradePage() {
   if (step === 'preview') {
     return (
       <IOSPageTransition>
-        <div className="w-full h-screen flex flex-col bg-white">
+        <div className="fixed inset-0 w-screen h-screen flex flex-col bg-white z-[9999]">
           {/* Header */}
-          <div className="p-4 bg-white flex items-center justify-between sticky top-0 z-10">
+          <div className="p-4 bg-white flex items-center justify-between sticky top-0 z-10 border-b border-slate-100">
             <button
               onClick={handleBack}
               className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100"
             >
               ←
             </button>
-            <h2 className="text-slate-900 font-extrabold text-lg">Preview</h2>
-            <div className="w-10"></div>
+            <div className="flex-1">
+              <div className="flex gap-1 justify-center">
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+              </div>
+            </div>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 font-bold"
+            >
+              ✕
+            </button>
           </div>
 
           {/* Content */}
@@ -448,16 +436,137 @@ export default function TradePage() {
           {/* Footer */}
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white space-y-4">
             <button
-              onClick={handleContinue}
+              onClick={() => setStep('options')}
               disabled={!agreedToTerms}
               className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-200 text-slate-900 disabled:text-slate-400 py-5 rounded-2xl font-black text-lg shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              Execute Trade ⚡
+              Find Options like my References 🔍
             </button>
-            <div className="flex items-center justify-center gap-2">
-              <span>🔒</span>
-              <p className="text-center text-slate-500 text-[10px] font-black uppercase tracking-widest">Secure Transaction</p>
+          </div>
+        </div>
+      </IOSPageTransition>
+    )
+  }
+
+  if (step === 'options') {
+    return (
+      <IOSPageTransition>
+        <div className="fixed inset-0 w-screen h-screen flex flex-col bg-slate-50 z-[9999]">
+          {/* Header */}
+          <div className="px-6 pt-6 pb-4 flex items-center justify-between sticky top-0 bg-white/95 border-b border-slate-100 z-10">
+            <button
+              onClick={() => setStep('preview')}
+              className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50"
+            >
+              ←
+            </button>
+            <div className="flex-1 px-4">
+              <div className="flex gap-1 justify-center">
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
+              </div>
             </div>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-bold"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto px-6 pt-6 pb-32">
+            <div className="mb-8">
+              <h2 className="text-2xl font-extrabold text-slate-900 leading-tight mb-2">Similar Trading Options</h2>
+              <p className="text-sm font-medium text-slate-500">Based on traders like you</p>
+            </div>
+
+            <div className="space-y-4">
+              {/* Option Card 1 */}
+              <div className="bg-white rounded-3xl border-2 border-slate-100 p-6 hover:border-primary/50 transition-all cursor-pointer">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-extrabold text-slate-900">Conservative Shield</h3>
+                    <p className="text-xs text-slate-500 mt-1">Protective strategy with 85% win rate</p>
+                  </div>
+                  <span className="text-2xl">🛡️</span>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">Avg Return</span>
+                    <span className="font-bold text-primary">+12.5%</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">Max Loss</span>
+                    <span className="font-bold text-orange-500">-8%</span>
+                  </div>
+                  <div className="pt-2 border-t border-slate-100">
+                    <p className="text-[10px] text-slate-400 font-bold">Used by 2,341 traders</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Option Card 2 */}
+              <div className="bg-white rounded-3xl border-2 border-slate-100 p-6 hover:border-primary/50 transition-all cursor-pointer">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-extrabold text-slate-900">Balanced Growth</h3>
+                    <p className="text-xs text-slate-500 mt-1">Moderate risk with steady gains</p>
+                  </div>
+                  <span className="text-2xl">⚖️</span>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">Avg Return</span>
+                    <span className="font-bold text-primary">+24.3%</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">Max Loss</span>
+                    <span className="font-bold text-orange-500">-15%</span>
+                  </div>
+                  <div className="pt-2 border-t border-slate-100">
+                    <p className="text-[10px] text-slate-400 font-bold">Used by 5,128 traders</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Option Card 3 */}
+              <div className="bg-white rounded-3xl border-2 border-slate-100 p-6 hover:border-primary/50 transition-all cursor-pointer">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-extrabold text-slate-900">Aggressive Bull</h3>
+                    <p className="text-xs text-slate-500 mt-1">High risk, high reward strategy</p>
+                  </div>
+                  <span className="text-2xl">⚡</span>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">Avg Return</span>
+                    <span className="font-bold text-primary">+48.7%</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">Max Loss</span>
+                    <span className="font-bold text-orange-500">-35%</span>
+                  </div>
+                  <div className="pt-2 border-t border-slate-100">
+                    <p className="text-[10px] text-slate-400 font-bold">Used by 1,856 traders</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-50 space-y-4">
+            <p className="text-center text-xs font-bold text-slate-400">Uncomment button below to execute trade</p>
+            {/* <button
+              onClick={handleContinue}
+              className="w-full bg-primary hover:bg-primary/90 text-slate-900 py-5 rounded-2xl font-black text-lg shadow-xl transition-all active:scale-95"
+            >
+              Execute Trade ⚡
+            </button> */}
           </div>
         </div>
       </IOSPageTransition>
@@ -467,10 +576,10 @@ export default function TradePage() {
   if (step === 'success') {
     return (
       <IOSPageTransition>
-        <div className="w-full h-screen flex flex-col bg-slate-50 items-center justify-center relative overflow-hidden">
+        <div className="fixed inset-0 w-screen h-screen flex flex-col bg-slate-50 items-center justify-center z-[9999] overflow-hidden">
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
 
-          <div className="relative w-[90%] max-w-[400px] bg-white rounded-[40px] p-8 shadow-2xl z-10 flex flex-col items-center text-center">
+          <div className="relative w-[90%] max-w-[400px] bg-white rounded-[40px] p-8 shadow-2xl z-50 flex flex-col items-center text-center">
             {/* Confetti */}
             <div className="absolute top-0 inset-x-0 h-32 pointer-events-none overflow-hidden">
               <div className="absolute w-2 h-2 bg-blue-400 rounded-sm top-4 left-10 rotate-45"></div>
