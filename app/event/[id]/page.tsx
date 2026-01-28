@@ -64,8 +64,9 @@ export default function EventDetailPage() {
     if (eventId) fetchEvent()
   }, [eventId])
 
-  const [selectedPrediction, setSelectedPrediction] = useState<string | null>(null)
-  const [confidence, setConfidence] = useState(50)
+  const [selectedPrediction, setSelectedPrediction] = useState<string | null>('High Volatility')
+  const [confidence, setConfidence] = useState(75)
+  const [amount, setAmount] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async () => {
@@ -115,6 +116,26 @@ export default function EventDetailPage() {
             </div>
           </div>
 
+          {/* Amount Input */}
+          <div className="mb-8 bg-card border border-border rounded-3xl p-6 shadow-card">
+            <h3 className="text-sm font-semibold text-foreground mb-4">
+              Trade Amount
+            </h3>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-foreground">$</span>
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0.00"
+                className="w-full pl-10 pr-4 py-4 bg-muted border-2 border-border rounded-2xl text-lg font-bold text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground mt-3 text-center">
+              Enter the amount you want to trade
+            </p>
+          </div>
+
           {/* Prediction Section */}
           <div className="mb-8">
             <h2 className="text-lg font-bold text-foreground mb-4 text-center">
@@ -124,10 +145,9 @@ export default function EventDetailPage() {
             {/* Prediction Options */}
             <div className="grid grid-cols-2 gap-3">
               {PREDICTION_OPTIONS.map((option) => (
-                <button
+                <div
                   key={option.label}
-                  onClick={() => setSelectedPrediction(option.label)}
-                  className={`group relative p-5 rounded-2xl border-2 transition-all duration-200 active:scale-95 ${
+                  className={`group relative p-5 rounded-2xl border-2 transition-all duration-200 ${
                     selectedPrediction === option.label
                       ? option.label === 'High Volatility'
                         ? 'border-yellow-500 bg-yellow-100 dark:bg-yellow-900/30'
@@ -158,36 +178,29 @@ export default function EventDetailPage() {
                       </p>
                     </div>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Confidence Slider */}
+          {/* Confidence Level */}
           <div className="mb-8 bg-card border border-border rounded-3xl p-6 shadow-card">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-foreground">
-                Your Confidence
+                Confidence Level
               </h3>
               <span className="text-2xl font-bold text-primary">
                 {confidence}%
               </span>
             </div>
 
-            {/* Slider Track */}
+            {/* Slider Track - Read Only */}
             <div className="relative mb-4 py-2">
               <div className="absolute inset-0 h-3 bg-muted rounded-full top-1/2 -translate-y-1/2"></div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={confidence}
-                onChange={(e) => setConfidence(Number(e.target.value))}
-                className="relative w-full h-3 rounded-full appearance-none cursor-pointer z-10"
-                style={{
-                  background: `linear-gradient(to right, hsl(var(--color-primary)) 0%, hsl(var(--color-primary)) ${confidence}%, transparent ${confidence}%, transparent 100%)`,
-                }}
-              />
+              <div 
+                className="absolute h-3 bg-primary rounded-full top-1/2 -translate-y-1/2 transition-all duration-300"
+                style={{ width: `${confidence}%` }}
+              ></div>
             </div>
 
             {/* Labels */}
@@ -200,9 +213,9 @@ export default function EventDetailPage() {
             {/* Submit Button */}
             <button
               onClick={handleSubmit}
-              disabled={!selectedPrediction || isSubmitting}
+              disabled={!amount || !selectedPrediction || isSubmitting}
               className={`w-full mt-6 py-4 font-bold rounded-2xl transition-all duration-200 active:scale-95 ${
-                selectedPrediction && !isSubmitting
+                amount && selectedPrediction && !isSubmitting
                   ? 'bg-primary text-white hover:shadow-lg border-b-4 border-primary-dark active:border-b-0 active:translate-y-[2px]'
                   : 'bg-muted text-muted-foreground cursor-not-allowed'
               }`}
