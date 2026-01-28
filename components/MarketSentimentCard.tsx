@@ -35,13 +35,13 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
         <div className="text-right">
           <div className="flex items-center gap-1 justify-end mb-1">
             {trend24h >= 0 ? (
-              <TrendingUp className="text-green-500" size={18} fill="currentColor" />
+              <TrendingUp className="text-[#4CC658]" size={18} fill="currentColor" />
             ) : (
               <TrendingDown className="text-red-500" size={18} fill="currentColor" />
             )}
             <span
               className={`text-lg font-bold ${
-                trend24h >= 0 ? 'text-green-500' : 'text-red-500'
+                trend24h >= 0 ? 'text-[#4CC658]' : 'text-red-500'
               }`}
             >
               {trend24h >= 0 ? '+' : ''}{trend24h.toFixed(1)}%
@@ -129,7 +129,7 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
       {/* Labels */}
       <div className="flex justify-between text-xs font-semibold text-muted-foreground px-1 mb-4">
         <span className="text-red-600">Extreme Fear</span>
-        <span className="text-green-600">Extreme Greed</span>
+        <span className="text-[#4CC658]">Extreme Greed</span>
       </div>     
 
       {/* Volatility Bar */}
@@ -143,7 +143,7 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
         </div>
         <div className="h-2 bg-border rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-red-500 via-yellow-400 to-green-500"
+            className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-red-500 via-yellow-400 to-[#4CC658]"
             style={{ width: `${volatility}%` }}
           />
         </div>

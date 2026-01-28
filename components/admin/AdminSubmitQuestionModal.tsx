@@ -151,7 +151,7 @@ export default function AdminSubmitQuestionModal({
           isClosing 
             ? 'animate-out slide-out-to-bottom md:slide-out-to-center duration-300' 
             : 'animate-in slide-in-from-bottom md:slide-in-from-center duration-300'
-        } max-h-[90vh] h-[92vh] bg-emerald-50 text-black flex flex-col overscroll-contain overflow-hidden min-h-0`}
+        } max-h-[90vh] h-[92vh] bg-[#4CC658]/5 text-black flex flex-col overscroll-contain overflow-hidden min-h-0`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Handle Bar */}
@@ -171,10 +171,10 @@ export default function AdminSubmitQuestionModal({
         </div>
 
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 border-b-2 bg-emerald-50 border-emerald-100 text-black">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 border-b-2 bg-[#4CC658]/5 border-[#4CC658]/20 text-black">
           <div>
-            <h2 className="text-2xl font-extrabold text-emerald-900">Create New Question</h2>
-            <p className="text-sm text-emerald-700 mt-1">This will be auto-approved</p>
+            <h2 className="text-2xl font-extrabold text-[#4CC658]">Create New Question</h2>
+            <p className="text-sm text-[#4CC658] mt-1">This will be auto-approved</p>
           </div>
           <button
             onClick={handleClose}
@@ -192,7 +192,7 @@ export default function AdminSubmitQuestionModal({
         <div className="px-6 py-6 space-y-6 text-black flex-1 overflow-y-auto min-h-0 [-webkit-overflow-scrolling:touch]">
           {/* Banner */}
           {banner.type && (
-            <div className={`p-3 rounded-xl border ${banner.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+            <div className={`p-3 rounded-xl border ${banner.type === 'success' ? 'bg-[#4CC658]/10 border-[#4CC658]/30 text-[#4CC658]' : 'bg-red-50 border-red-200 text-red-700'}`}>>
               {banner.message}
             </div>
           )}
@@ -337,8 +337,8 @@ export default function AdminSubmitQuestionModal({
                   onClick={() => setCategory(cat)}
                   className={`px-4 py-3 rounded-lg border-2 font-medium transition-all ${
                     category === cat
-                      ? 'bg-emerald-500 border-emerald-500 text-white'
-                      : 'bg-white border-gray-300 text-gray-900 hover:border-emerald-300'
+                      ? 'bg-[#4CC658] border-[#4CC658] text-white'
+                      : 'bg-white border-gray-300 text-gray-900 hover:border-[#4CC658]'
                   } disabled:opacity-50`}
                   disabled={isLoading}
                 >
@@ -362,8 +362,8 @@ export default function AdminSubmitQuestionModal({
                   onClick={() => setImpact(level)}
                   className={`px-4 py-3 rounded-lg border-2 font-medium transition-all ${
                     impact === level
-                      ? 'bg-emerald-500 border-emerald-500 text-white'
-                      : 'bg-white border-gray-300 text-gray-900 hover:border-emerald-300'
+                      ? 'bg-[#4CC658] border-[#4CC658] text-white'
+                      : 'bg-white border-gray-300 text-gray-900 hover:border-[#4CC658]'
                   } disabled:opacity-50`}
                   disabled={isLoading}
                 >
@@ -391,7 +391,7 @@ export default function AdminSubmitQuestionModal({
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="w-full py-4 rounded-2xl text-white font-extrabold text-lg shadow-lg hover:shadow-xl transition-all active:scale-95 mt-6 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-emerald-500 to-emerald-600"
+            className="w-full py-4 rounded-2xl text-white font-extrabold text-lg shadow-lg hover:shadow-xl transition-all active:scale-95 mt-6 disabled:opacity-50 disabled:cursor-not-allowed bg-[#4CC658]"
           >
             {isLoading ? 'Creating...' : 'Create & Approve'}
           </button>

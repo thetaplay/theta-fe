@@ -34,7 +34,7 @@ export function ActivityModal({
   const getTypeStyles = (type: ActivityData['type']) => {
     switch (type) {
       case 'win':
-        return 'bg-green-100 text-green-700'
+        return 'bg-[#4CC658]/20 text-[#4CC658]'
       case 'loss':
         return 'bg-red-100 text-red-700'
       case 'achievement':
@@ -122,7 +122,7 @@ export function ActivityModal({
                 </div>
                 {activity.amount && (
                   <span className={`text-2xl font-extrabold ${
-                    activity.type === 'win' ? 'text-green-600' : 'text-red-600'
+                    activity.type === 'win' ? 'text-[#4CC658]' : 'text-red-600'
                   }`}>
                     {activity.amount}
                   </span>
@@ -175,7 +175,7 @@ export function ActivityModal({
               )}
 
               {/* Action Button */}
-              <button className="w-full py-4 px-6 rounded-2xl font-bold text-sm bg-green-500 text-white shadow-lg shadow-green-500/50 hover:shadow-xl active:scale-95 transition-all">
+              <button className="w-full py-4 px-6 rounded-2xl font-bold text-sm bg-[#4CC658] text-white shadow-lg shadow-[#4CC658]/50 hover:shadow-xl active:scale-95 transition-all">
                 View Full Details
               </button>
             </div>

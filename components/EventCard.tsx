@@ -22,7 +22,7 @@ const iconContainerColors = {
   Macro: 'bg-blue-100 text-blue-600',
   Crypto: 'bg-orange-100 text-orange-600',
   Corporate: 'bg-purple-100 text-purple-600',
-  Other: 'bg-green-100 text-green-600',
+  Other: 'bg-[#4CC658]/20 text-[#4CC658]',
 }
 
 export function EventCard({
@@ -39,7 +39,7 @@ export function EventCard({
 
   return (
     <Link href={`/event/${id}`}>
-      <div className="group my-2.5 relative bg-card border border-border rounded-3xl p-4 card-shadow hover:shadow-xl transition-all duration-200 active:scale-95 cursor-pointer flex items-center gap-4">
+      <div className="group my-2.5 relative bg-gradient-to-br from-card to-muted/20 border border-border rounded-3xl p-4 shadow-[0_4px_0_0_#cbd5e1] hover:shadow-xl transition-all duration-200 active:scale-95 cursor-pointer flex items-center gap-4">
         {/* Icon/Photo - Left Side */}
         <div
           className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center ${containerColor}`}
@@ -66,17 +66,6 @@ export function EventCard({
           {/* Predict Description */}
           <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{date}</p>
         </div>
-
-        {/* Trade Button - Right Side */}
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-          }}
-          className="btn-icon flex-shrink-0 text-xs font-bold whitespace-nowrap"
-        >
-          Trade
-        </button>
       </div>
     </Link>
   )

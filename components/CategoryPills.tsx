@@ -22,9 +22,9 @@ export function CategoryPills({
           <button
             key={category}
             onClick={() => onCategoryChange(category)}
-            className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
+            className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all duration-200 flex-shrink-0 ${
               isActive
-                ? 'bg-green-500 text-white shadow-md shadow-green-500/50'
+                ? 'bg-[#4CC658] text-slate-900 shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px]'
                 : 'bg-muted text-foreground border border-border'
             }`}
           >

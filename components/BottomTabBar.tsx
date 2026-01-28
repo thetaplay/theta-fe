@@ -61,9 +61,9 @@ export function BottomTabBar() {
                 >
                   <div className="relative group">
                     {/* Glow effect */}
-                    <div className="absolute inset-0 bg-green-500 rounded-full blur-xl opacity-30 group-active:scale-110 transition-transform duration-200" />
+                    <div className="absolute inset-0 bg-[#4CC658] rounded-full blur-xl opacity-30 group-active:scale-110 transition-transform duration-200" />
                     {/* Button */}
-                    <div className="relative bg-green-500 text-white rounded-full p-4 group-active:scale-90 transition-transform duration-150">
+                    <div className="relative bg-[#4CC658] text-white rounded-full p-4 group-active:scale-90 transition-transform duration-150">
                       {tab.icon}
                     </div>
                   </div>
@@ -82,14 +82,14 @@ export function BottomTabBar() {
               >
                 <div
                   className={`transition-colors duration-200 ${
-                    isActive ? 'text-primary' : 'text-muted-foreground'
+                    isActive ? 'text-[#4CC658]' : 'text-muted-foreground'
                   }`}
                 >
                   {tab.icon}
                 </div>
                 <span
                   className={`text-xs font-medium transition-colors duration-200 ${
-                    isActive ? 'text-primary font-semibold' : 'text-muted-foreground'
+                    isActive ? 'text-[#4CC658] font-semibold' : 'text-muted-foreground'
                   }`}
                 >
                   {tab.label}

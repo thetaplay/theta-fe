@@ -140,7 +140,7 @@ body {
 @layer components {
   /* Gamification Button Styles */
   .btn-primary {
-    @apply px-4 py-3 rounded-2xl font-bold text-sm bg-gradient-to-b from-green-400 to-green-600 text-white shadow-lg shadow-green-200/50 border-b-4 border-green-700 active:border-b-0 active:translate-y-[2px] transition-all duration-75;
+    @apply px-4 py-3 rounded-2xl font-bold text-sm bg-[#4CC658] text-white shadow-lg shadow-[#4CC658]/50 border-0 active:translate-y-[2px] transition-all duration-75;
   }
 
   .btn-secondary {

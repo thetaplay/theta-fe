@@ -92,7 +92,7 @@ export default function EventPage() {
               placeholder="Search options..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-card border border-border text-foreground placeholder-muted-foreground soft-shadow focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+              className="w-full pl-10 pr-4 py-3 rounded-2xl bg-card border border-border text-foreground placeholder-muted-foreground soft-shadow focus:outline-none transition-all"
             />
           </div>
 

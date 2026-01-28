@@ -25,7 +25,7 @@ const GOALS = [
     title: 'Earn safely',
     description: 'Generate steady income',
     icon: '💰',
-    color: 'bg-emerald-100',
+    color: 'bg-[#4CC658]/20',
   },
 ]
 
@@ -76,10 +76,10 @@ const STRATEGIES = [
 
 export default function TradePage() {
   const [step, setStep] = useState<TradeStep>('goal')
-  const [selectedGoal, setSelectedGoal] = useState<string | null>('upside')
+  const [selectedGoal, setSelectedGoal] = useState<string | null>(null)
   const [selectedRisk, setSelectedRisk] = useState<string | null>(null)
   const [tradeAmount, setTradeAmount] = useState('')
-  const [selectedStrategy, setSelectedStrategy] = useState<string | null>('safety-shield')
+  const [selectedStrategy, setSelectedStrategy] = useState<string | null>(null)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
 
   const handleContinue = () => {
@@ -170,7 +170,7 @@ export default function TradePage() {
             <button
               onClick={handleContinue}
               disabled={!selectedGoal}
-              className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-200 text-slate-900 disabled:text-slate-400 font-extrabold py-5 rounded-2xl shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
             >
               Continue
             </button>
@@ -248,7 +248,7 @@ export default function TradePage() {
             <button
               onClick={handleContinue}
               disabled={!selectedRisk}
-              className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-200 text-slate-900 disabled:text-slate-400 font-extrabold py-5 rounded-2xl shadow-xl transition-all active:scale-95"
+              className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
             >
               Continue
             </button>
@@ -324,7 +324,7 @@ export default function TradePage() {
             <button
               onClick={handleContinue}
               disabled={!selectedStrategy}
-              className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-200 text-slate-900 disabled:text-slate-400 py-5 rounded-2xl font-black text-lg shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
             >
               Continue
             </button>
@@ -438,7 +438,7 @@ export default function TradePage() {
             <button
               onClick={() => setStep('options')}
               disabled={!agreedToTerms}
-              className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-200 text-slate-900 disabled:text-slate-400 py-5 rounded-2xl font-black text-lg shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
             >
               Find Options like my References 🔍
             </button>
@@ -621,7 +621,7 @@ export default function TradePage() {
             <div className="w-full space-y-4">
               <button
                 onClick={() => window.location.href = '/profile'}
-                className="w-full bg-primary hover:bg-primary/90 text-slate-900 py-5 rounded-3xl font-black text-lg shadow-xl transition-all active:scale-95"
+                className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all"
               >
                 View Portfolio
               </button>
