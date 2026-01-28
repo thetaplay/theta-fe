@@ -186,7 +186,7 @@ export default function AdminPage() {
               </div>
             ) : error ? (
               <div className="text-center py-8">
-                <p className="text-red-600 dark:text-red-400 text-sm">Failed to load: {error}</p>
+                <p className="text-red-600 text-sm">Failed to load: {error}</p>
               </div>
             ) : filtered.length > 0 ? (
               filtered.map((event) => (

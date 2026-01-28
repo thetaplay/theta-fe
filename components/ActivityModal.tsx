@@ -34,13 +34,13 @@ export function ActivityModal({
   const getTypeStyles = (type: ActivityData['type']) => {
     switch (type) {
       case 'win':
-        return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+        return 'bg-green-100 text-green-700'
       case 'loss':
-        return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+        return 'bg-red-100 text-red-700'
       case 'achievement':
-        return 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+        return 'bg-purple-100 text-purple-700'
       default:
-        return 'bg-slate-100 dark:bg-slate-800'
+        return 'bg-slate-100'
     }
   }
 
@@ -80,7 +80,7 @@ export function ActivityModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/20 dark:bg-black/40 z-40"
+            className="fixed inset-0 bg-black/20 z-40"
           />
 
           {/* Modal */}
@@ -122,7 +122,7 @@ export function ActivityModal({
                 </div>
                 {activity.amount && (
                   <span className={`text-2xl font-extrabold ${
-                    activity.type === 'win' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                    activity.type === 'win' ? 'text-green-600' : 'text-red-600'
                   }`}>
                     {activity.amount}
                   </span>

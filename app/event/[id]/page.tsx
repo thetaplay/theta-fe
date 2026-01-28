@@ -150,11 +150,11 @@ export default function EventDetailPage() {
                   className={`group relative p-5 rounded-2xl border-2 transition-all duration-200 ${
                     selectedPrediction === option.label
                       ? option.label === 'High Volatility'
-                        ? 'border-yellow-500 bg-yellow-100 dark:bg-yellow-900/30'
-                        : 'border-blue-500 bg-blue-100 dark:bg-blue-900/30'
+                        ? 'border-yellow-500 bg-yellow-100'
+                        : 'border-blue-500 bg-blue-100'
                       : option.label === 'High Volatility'
-                      ? 'border-border bg-yellow-50 dark:bg-yellow-900/10 hover:border-yellow-400'
-                      : 'border-border bg-blue-50 dark:bg-blue-900/10 hover:border-blue-400'
+                      ? 'border-border bg-yellow-50 hover:border-yellow-400'
+                      : 'border-border bg-blue-50 hover:border-blue-400'
                   }`}
                 >
                   <div className="flex flex-col items-center gap-3">
@@ -162,8 +162,8 @@ export default function EventDetailPage() {
                       className={`flex-shrink-0 text-3xl transition-colors ${
                         selectedPrediction === option.label
                           ? option.label === 'High Volatility'
-                            ? 'text-yellow-600 dark:text-yellow-400'
-                            : 'text-blue-600 dark:text-blue-400'
+                            ? 'text-yellow-600'
+                            : 'text-blue-600'
                           : 'text-muted-foreground'
                       }`}
                     >

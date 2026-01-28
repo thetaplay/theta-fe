@@ -47,10 +47,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#19e65e' },
-    { media: '(prefers-color-scheme: dark)', color: '#19e65e' },
-  ],
+  themeColor: '#19e65e',
 }
 
 export default function RootLayout({
@@ -59,7 +56,49 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="light">
+      <head>
+        <meta name="color-scheme" content="light" />
+        <meta name="theme-color" content="#19e65e" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="light" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Force light mode immediately on page load
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                document.documentElement.style.colorScheme = 'light';
+                document.documentElement.style.backgroundColor = '#ffffff';
+                document.body.style.backgroundColor = '#ffffff';
+                
+                // Clear all dark mode related storage
+                localStorage.removeItem('theme-mode');
+                localStorage.removeItem('theme');
+                localStorage.removeItem('next-theme');
+                sessionStorage.removeItem('theme-mode');
+                sessionStorage.removeItem('theme');
+                
+                // Override prefers-color-scheme media query
+                const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                if (darkModeQuery.matches) {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.classList.add('light');
+                }
+                
+                // Listen for any dark mode preference changes and override them
+                darkModeQuery.addListener((e) => {
+                  if (e.matches) {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.classList.add('light');
+                    document.documentElement.style.colorScheme = 'light';
+                  }
+                });
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={`${poppins.className} antialiased`}>
         <ThemeProvider>
           <AnimatedLayout>

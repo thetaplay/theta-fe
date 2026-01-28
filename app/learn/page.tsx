@@ -10,7 +10,7 @@ export default function LearnPage() {
       description: 'Learn blockchain, smart contracts, and DeFi basics',
       lessons: 8,
       icon: <BookFill size={24} />,
-      color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+      color: 'bg-blue-100 text-blue-600',
     },
     {
       id: 2,
@@ -18,7 +18,7 @@ export default function LearnPage() {
       description: 'Master predicting crypto and economic events',
       lessons: 12,
       icon: <PlayFill size={24} />,
-      color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
+      color: 'bg-purple-100 text-purple-600',
     },
     {
       id: 3,
@@ -26,7 +26,7 @@ export default function LearnPage() {
       description: 'Manage your portfolio and minimize losses',
       lessons: 6,
       icon: <Award size={24} />,
-      color: 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400',
+      color: 'bg-orange-100 text-orange-600',
     },
   ]
 

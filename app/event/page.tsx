@@ -113,7 +113,7 @@ export default function EventPage() {
               </div>
             ) : error ? (
               <div className="text-center py-8">
-                <p className="text-red-600 dark:text-red-400 text-sm">Failed to load events: {error}</p>
+                <p className="text-red-600 text-sm">Failed to load events: {error}</p>
               </div>
             ) : (
               filteredEvents.length > 0 ? (

@@ -1,9 +1,58 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@custom-variant dark (&:is(.dark *));
+/* ========================================
+   FORCE LIGHT MODE GLOBALLY - HIGHEST PRIORITY
+   ======================================== */
+
+/* Force light mode on html element */
+html {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+/* Force light mode on body */
+body {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Remove dark class completely */
+.dark {
+  display: none !important;
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+}
+
+/* Override any dark: prefixed styles */
+[class*='dark:'] {
+  color-scheme: light !important;
+  background-color: inherit !important;
+}
+
+/* Override prefers-color-scheme: dark media query */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: light !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+  }
+  
+  body {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  * {
+    color-scheme: light !important;
+  }
+}
 
 :root {
+  /* Light Mode Colors Only */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -37,41 +86,6 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
 }
 
 @theme inline {
@@ -126,18 +140,18 @@
 @layer components {
   /* Gamification Button Styles */
   .btn-primary {
-    @apply px-4 py-3 rounded-2xl font-bold text-sm bg-gradient-to-b from-green-400 to-green-600 text-white shadow-lg shadow-green-200/50 dark:shadow-green-900/50 border-b-4 border-green-700 dark:border-green-800 active:border-b-0 active:translate-y-[2px] transition-all duration-75;
+    @apply px-4 py-3 rounded-2xl font-bold text-sm bg-gradient-to-b from-green-400 to-green-600 text-white shadow-lg shadow-green-200/50 border-b-4 border-green-700 active:border-b-0 active:translate-y-[2px] transition-all duration-75;
   }
 
   .btn-secondary {
-    @apply px-4 py-3 rounded-2xl font-bold text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-md shadow-slate-200/50 dark:shadow-slate-900/50 border-b-4 border-slate-300 dark:border-slate-700 active:border-b-0 active:translate-y-[2px] transition-all duration-75;
+    @apply px-4 py-3 rounded-2xl font-bold text-sm bg-slate-100 text-slate-700 shadow-md shadow-slate-200/50 border-b-4 border-slate-300 active:border-b-0 active:translate-y-[2px] transition-all duration-75;
   }
 
   .btn-icon {
-    @apply px-3 py-2 rounded-xl font-bold text-sm bg-gradient-to-b from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 text-slate-700 dark:text-slate-200 shadow-md shadow-slate-200/50 dark:shadow-slate-900/50 border-b-3 border-slate-400 dark:border-slate-900 active:border-b-0 active:translate-y-[2px] transition-all duration-75;
+    @apply px-3 py-2 rounded-xl font-bold text-sm bg-gradient-to-b from-slate-200 to-slate-300 text-slate-700 shadow-md shadow-slate-200/50 border-b-3 border-slate-400 active:border-b-0 active:translate-y-[2px] transition-all duration-75;
   }
 
   .card-shadow {
-    @apply shadow-md dark:shadow-lg;
+    @apply shadow-md;
   }
 }

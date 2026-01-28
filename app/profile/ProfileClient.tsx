@@ -37,8 +37,8 @@ const positions: Position[] = [
     endsIn: '2d 4h',
     maxLoss: '$45.00',
     icon: 'shield',
-    iconBg: 'bg-secondary-blue/30 dark:bg-blue-900/20',
-    iconColor: 'text-blue-600 dark:text-blue-400',
+    iconBg: 'bg-secondary-blue/30',
+    iconColor: 'text-blue-600',
     sfIcon: Shield,
   },
   {
@@ -48,8 +48,8 @@ const positions: Position[] = [
     endsIn: '5d 12h',
     maxLoss: '$120.00',
     icon: 'trending_up',
-    iconBg: 'bg-secondary-purple/30 dark:bg-purple-900/20',
-    iconColor: 'text-purple-600 dark:text-purple-400',
+    iconBg: 'bg-secondary-purple/30',
+    iconColor: 'text-purple-600',
     sfIcon: ChartLineUptrendXyaxis,
   },
   {
@@ -59,8 +59,8 @@ const positions: Position[] = [
     endsIn: '12h 15m',
     maxLoss: '$0.00 (Protected)',
     icon: 'water_drop',
-    iconBg: 'bg-primary/10 dark:bg-primary/20',
-    iconColor: 'text-primary-dark dark:text-primary',
+    iconBg: 'bg-primary/10',
+    iconColor: 'text-primary-dark',
     sfIcon: WaterDrop,
   },
 ]
@@ -87,21 +87,21 @@ export function ProfileClient() {
   const getStatusBadge = (status: Position['status']) => {
     if (status === 'active') {
       return (
-        <span className="bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+        <span className="bg-green-100 text-green-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
           Active
         </span>
       )
     }
     if (status === 'settling') {
       return (
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-full border border-amber-100 dark:border-amber-800/50">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-full border border-amber-100">
           <span className="material-symbols-outlined text-sm font-bold">hourglass_empty</span>
           <span className="text-[10px] font-extrabold uppercase tracking-widest">Settling</span>
         </div>
       )
     }
     return (
-      <span className="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 text-[11px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest border border-slate-200 dark:border-slate-700">
+      <span className="bg-slate-100 text-slate-600 text-[11px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest border border-slate-200">
         Settled
       </span>
     )
@@ -217,7 +217,7 @@ export function ProfileClient() {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/20 dark:bg-black/60 z-[100]"
+            className="fixed inset-0 bg-black/20 z-[100]"
             onClick={handleCloseModal}
           />
 
@@ -259,8 +259,8 @@ export function ProfileClient() {
               {/* Settling Info */}
               {selectedPosition.status === 'settling' && (
                 <div className="bg-secondary-blue/10 border border-secondary-blue/20 rounded-3xl p-5 mb-6 flex items-start gap-4">
-                  <div className="w-10 h-10 shrink-0 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center">
-                    <StarFill size={20} className="text-blue-600 dark:text-blue-300" />
+                  <div className="w-10 h-10 shrink-0 bg-blue-100 rounded-full flex items-center justify-center">
+                    <StarFill size={20} className="text-blue-600" />
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground mb-1">Expired — settling in progress</h4>

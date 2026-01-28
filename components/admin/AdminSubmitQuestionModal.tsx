@@ -151,7 +151,7 @@ export default function AdminSubmitQuestionModal({
           isClosing 
             ? 'animate-out slide-out-to-bottom md:slide-out-to-center duration-300' 
             : 'animate-in slide-in-from-bottom md:slide-in-from-center duration-300'
-        } max-h-[90vh] h-[92vh] bg-emerald-50 text-black dark:text-black flex flex-col overscroll-contain overflow-hidden min-h-0`}
+        } max-h-[90vh] h-[92vh] bg-emerald-50 text-black flex flex-col overscroll-contain overflow-hidden min-h-0`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Handle Bar */}
@@ -171,10 +171,10 @@ export default function AdminSubmitQuestionModal({
         </div>
 
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 border-b-2 bg-emerald-50 border-emerald-100 text-black dark:text-black">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 border-b-2 bg-emerald-50 border-emerald-100 text-black">
           <div>
-            <h2 className="text-2xl font-extrabold text-emerald-900 dark:text-black">Create New Question</h2>
-            <p className="text-sm text-emerald-700 dark:text-black mt-1">This will be auto-approved</p>
+            <h2 className="text-2xl font-extrabold text-emerald-900">Create New Question</h2>
+            <p className="text-sm text-emerald-700 mt-1">This will be auto-approved</p>
           </div>
           <button
             onClick={handleClose}
@@ -189,10 +189,10 @@ export default function AdminSubmitQuestionModal({
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6 space-y-6 text-black dark:text-black flex-1 overflow-y-auto min-h-0 [-webkit-overflow-scrolling:touch]">
+        <div className="px-6 py-6 space-y-6 text-black flex-1 overflow-y-auto min-h-0 [-webkit-overflow-scrolling:touch]">
           {/* Banner */}
           {banner.type && (
-            <div className={`p-3 rounded-xl border ${banner.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:text-black' : 'bg-red-50 border-red-200 text-red-700 dark:text-black'}`}>
+            <div className={`p-3 rounded-xl border ${banner.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
               {banner.message}
             </div>
           )}
@@ -200,7 +200,7 @@ export default function AdminSubmitQuestionModal({
           {/* Title */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-gray-900 dark:text-black mb-2">
+              <label className="block text-sm font-bold text-gray-900 mb-2">
                 Title <span className="text-red-600">*</span>
               </label>
               <input
@@ -221,7 +221,7 @@ export default function AdminSubmitQuestionModal({
 
           {/* Question Input */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 dark:text-black mb-2">
+            <label className="block text-sm font-bold text-gray-900 mb-2">
               Question <span className="text-red-600">*</span>
             </label>
             <textarea
@@ -239,7 +239,7 @@ export default function AdminSubmitQuestionModal({
 
           {/* Description Input */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 dark:text-black mb-2">
+            <label className="block text-sm font-bold text-gray-900 mb-2">
               Description (Optional)
             </label>
             <textarea
@@ -254,7 +254,7 @@ export default function AdminSubmitQuestionModal({
 
           {/* End Date Input */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 dark:text-black mb-2">
+            <label className="block text-sm font-bold text-gray-900 mb-2">
               End Date & Time <span className="text-red-600">*</span>
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -263,7 +263,7 @@ export default function AdminSubmitQuestionModal({
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 font-medium disabled:bg-gray-100 dark:[color-scheme:light]"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 font-medium disabled:bg-gray-100"
                   disabled={isLoading}
                 />
                 {errors.endDate && (
@@ -275,7 +275,7 @@ export default function AdminSubmitQuestionModal({
                   type="time"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 font-medium disabled:bg-gray-100 dark:[color-scheme:light]"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 font-medium disabled:bg-gray-100"
                   disabled={isLoading}
                 />
                 {errors.endTime && (
@@ -287,7 +287,7 @@ export default function AdminSubmitQuestionModal({
 
           {/* Photo Upload */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 dark:text-black mb-2">
+            <label className="block text-sm font-bold text-gray-900 mb-2">
               Photo <span className="text-red-600">*</span>
             </label>
             {photoPreview ? (
@@ -326,7 +326,7 @@ export default function AdminSubmitQuestionModal({
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 dark:text-black mb-3">
+            <label className="block text-sm font-bold text-gray-900 mb-3">
               Category <span className="text-red-600">*</span>
             </label>
             <div className="grid grid-cols-1 gap-2">
@@ -353,7 +353,7 @@ export default function AdminSubmitQuestionModal({
 
           {/* Impact */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 dark:text-black mb-2">Impact</label>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Impact</label>
             <div className="grid grid-cols-3 gap-2">
               {(['Low', 'Medium', 'High'] as const).map((level) => (
                 <button
@@ -375,7 +375,7 @@ export default function AdminSubmitQuestionModal({
 
           {/* Why it matters */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 dark:text-black mb-2">Why it matters (one per line)</label>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Why it matters (one per line)</label>
             <textarea
               value={whyItMatters}
               onChange={(e) => setWhyItMatters(e.target.value)}

@@ -24,7 +24,7 @@ export default function HomePage() {
       <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 mt-0">
         {/* Highlight Event Card */}
         <div className="mb-6 relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-200/20 dark:to-purple-900/20 rounded-3xl blur-xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-200/20 rounded-3xl blur-xl" />
           <div className="relative bg-card border border-primary/30 rounded-3xl p-6 overflow-hidden">
             {/* Background accent */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -z-10" />
@@ -97,9 +97,9 @@ export default function HomePage() {
             </div>
 
             {/* XP */}
-            <div className="bg-gradient-to-br from-blue-100/20 to-transparent dark:from-blue-900/20 border border-blue-200/30 dark:border-blue-800/30 rounded-3xl p-4">
+            <div className="bg-gradient-to-br from-blue-100/20 to-transparent border border-blue-200/30 rounded-3xl p-4">
               <p className="text-sm text-muted-foreground mb-1">Total XP</p>
-              <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+              <p className="text-3xl font-bold text-blue-600">
                 1,250
               </p>
               <p className="text-xs text-muted-foreground mt-2">

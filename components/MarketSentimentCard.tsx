@@ -100,7 +100,7 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
                 strokeLinecap="round"
               />
               <circle cx="0" cy="0" r="5" fill={config.color} />
-              <circle cx="0" cy="0" r="3" fill="white" className="dark:fill-gray-900" />
+              <circle cx="0" cy="0" r="3" fill="white" />
             </g>
 
             {/* Center score */}
@@ -128,8 +128,8 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
 
       {/* Labels */}
       <div className="flex justify-between text-xs font-semibold text-muted-foreground px-1 mb-4">
-        <span className="text-red-600 dark:text-red-400">Extreme Fear</span>
-        <span className="text-green-600 dark:text-green-400">Extreme Greed</span>
+        <span className="text-red-600">Extreme Fear</span>
+        <span className="text-green-600">Extreme Greed</span>
       </div>     
 
       {/* Volatility Bar */}
