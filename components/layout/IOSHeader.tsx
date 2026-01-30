@@ -4,7 +4,6 @@ import React from "react"
 
 import { ChevronLeft } from '@/components/sf-symbols'
 import { BellFill } from '@/components/sf-symbols'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 interface IOSHeaderProps {
@@ -39,7 +38,7 @@ export function IOSHeader({
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-40 glass border-b w-full">
+    <div className="fixed top-0 left-0 right-0 z-40 glass border-b w-full shadow-sm">
       <div className="px-4 md:px-6 lg:px-8 py-3 safe-area-top w-full">
         <div className="flex items-center justify-between gap-3">
           {/* Left Section */}

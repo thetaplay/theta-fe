@@ -32,40 +32,33 @@ export async function generateExplanation(params: {
     const expiryDate = new Date(expiry * 1000).toLocaleDateString()
     const daysLeft = Math.max(0, Math.floor((expiry * 1000 - Date.now()) / (1000 * 60 * 60 * 24)))
 
-    const prompt = `You are an expert in crypto options trading. Explain this position in simple, beginner-friendly terms.
+    const prompt = `You're explaining this to someone who's never traded before. Use SUPER simple language like you're texting a friend.
 
-Position Details:
-- Type: ${positionType} option
-- Asset: ${asset}
-- Strike Price: $${strike}
-- Current Price: $${currentPrice}
-- Premium Paid: $${premiumPaid}
-- Expiry: ${expiryDate} (${daysLeft} days left)
-- Status: ${status}
+Position: ${positionType === 'CALL' ? 'BETTING price goes UP' : 'PROTECTION if price goes DOWN'}
+- You paid: $${premiumPaid}
+- Target price: $${strike}
+- Current price: $${currentPrice}
+- Days left: ${daysLeft}
 
-Generate a clear explanation with exactly 3 sections:
-
-1. "What is this?" - Explain in 2-3 sentences what this position means, using simple analogies (like insurance, lottery ticket, etc). Don't use jargon.
-
-2. "Why was it chosen?" - In 2-3 sentences, explain the market reasoning and strategy behind this position. Be specific about price expectations.
-
-3. "What to watch?" - In 2-3 sentences, tell the user what key metrics or events to monitor. Be actionable and specific.
-
-Format your response as JSON:
+Return JSON with 3 SUPER SHORT sections (max 30 words each):
 {
-  "whatIsThis": "...",
-  "whyChosen": "...",
-  "whatToWatch": "..."
+  "whatIsThis": "Explain like telling a story to a 10-year-old. Use CONCRETE everyday analogies (lottery ticket, car insurance, discount coupon). NEVER use technical words like 'strike', 'premium', 'option', 'contract'.",
+  "whyChosen": "Why did I buy this? What am I hoping happens? Talk like chatting with a friend, NOT formal.",
+  "whatToWatch": "What should I check daily? Give 1-2 simple things. Examples: 'Check ${asset} price in app' or 'See how many days left'."
 }
 
-Keep each section under 80 words. Be conversational and helpful.`
+IMPORTANT RULES:
+- Use "you/I" not formal language
+- AVOID words: option, strike, premium, contract, expiry
+- Use relatable analogies (like buying a raffle ticket, paying for parking, getting a coupon)
+- Be SUPER casual, like texting a buddy`
 
     try {
         const completion = await openrouter.chat.completions.create({
             model: DEFAULT_MODEL,
             messages: [{ role: 'user', content: prompt }],
-            temperature: 0.7,
-            max_tokens: 500,
+            temperature: 0.8, // Slightly higher for more creative analogies
+            max_tokens: 300,
         })
 
         const content = completion.choices[0]?.message?.content
@@ -87,22 +80,24 @@ function generateTemplateExplanation(params: {
     strike: number
     currentPrice: number
     asset: string
+    premiumPaid: number
 }): {
     whatIsThis: string
     whyChosen: string
     whatToWatch: string
 } {
-    const { positionType, strike, currentPrice, asset } = params
+    const { positionType, strike, currentPrice, asset, premiumPaid } = params
     const isCall = positionType === 'CALL'
     const direction = isCall ? 'above' : 'below'
     const movement = isCall ? 'rise' : 'drop'
 
     return {
-        whatIsThis: `Think of this like ${isCall ? 'a lottery ticket' : 'an insurance policy'
-            } for your crypto. If ${asset} ${movement}s significantly, this position steps in to ${isCall ? 'let you profit' : 'cover your losses'
-            }.`,
-        whyChosen: `Market signals showed potential for ${asset} to move ${direction} $${strike}. This ${positionType} option was selected to ${isCall ? 'capture upside potential' : 'protect against downside risk'
-            } without risking too much capital.`,
-        whatToWatch: `Keep an eye on the "Ends in" timer. As it gets closer to zero, you'll want to decide if you need to take action or let it expire. Also watch ${asset}'s price - if it moves ${direction} $${strike}, your position becomes more valuable!`,
+        whatIsThis: isCall
+            ? `It's like buying a lottery ticket for ${asset}! You paid $${premiumPaid} for the ticket. If the price goes above $${strike}, you win big!`
+            : `Think of it as insurance for your ${asset}. You paid $${premiumPaid} just in case the price crashes. If it drops, you're protected!`,
+        whyChosen: isCall
+            ? `You're betting ${asset} will rise above $${strike}. If it does, you profit! Worst case? You only lose the $${premiumPaid} you paid.`
+            : `You're worried ${asset} might drop below $${strike}. This is your safety net. If it crashes, you won't lose much. Max loss: $${premiumPaid}.`,
+        whatToWatch: `Check ${asset} price daily in the app. ${isCall ? `If it crosses $${strike}, you're making money!` : `If price gets near $${strike}, your protection kicks in.`} Don't forget to watch days remaining.`,
     }
 }

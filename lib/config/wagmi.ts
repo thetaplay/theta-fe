@@ -9,10 +9,7 @@ export const config = createConfig({
             appName: 'ThetaPlay Options',
             preference: 'smartWalletOnly', // Coinbase Smart Wallet
         }),
-        injected(), // MetaMask, Rabby, etc.
-        walletConnect({
-            projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '',
-        }),
+        injected(),
     ],
     transports: {
         [baseSepolia.id]: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL),

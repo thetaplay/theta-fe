@@ -1,26 +1,49 @@
 'use client'
 
 import React from 'react'
-import { TrendingUp, TrendingDown } from 'lucide-react'
-import { BoltFill, Flame } from '@/components/sf-symbols'
-
-interface MarketSentimentCardProps {
-  volatility: number // 0-100
-  trend24h: number // positive or negative
-  sentiment: 'extreme-fear' | 'fear' | 'neutral' | 'greed' | 'extreme-greed'
-}
+import { TrendingUp, TrendingDown, Loader2 } from 'lucide-react'
+import { Flame } from '@/components/sf-symbols'
+import { useFearGreedIndex } from '@/hooks/useFearGreedIndex'
 
 const sentimentConfig = {
-  'extreme-fear': { color: '#DC2626', label: 'Extreme Fear', score: 10 },
-  'fear': { color: '#F97316', label: 'Fear', score: 35 },
-  'neutral': { color: '#FBBF24', label: 'Neutral', score: 50 },
-  'greed': { color: '#84CC16', label: 'Greed', score: 75 },
-  'extreme-greed': { color: '#22C55E', label: 'Extreme Greed', score: 90 },
+  'extreme-fear': { color: '#DC2626', label: 'Extreme Fear' },
+  'fear': { color: '#F97316', label: 'Fear' },
+  'neutral': { color: '#FBBF24', label: 'Neutral' },
+  'greed': { color: '#84CC16', label: 'Greed' },
+  'extreme-greed': { color: '#22C55E', label: 'Extreme Greed' },
 }
 
-export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketSentimentCardProps) {
+// Map API classification to sentiment keys
+const mapClassificationToSentiment = (classification: string): keyof typeof sentimentConfig => {
+  const lower = classification.toLowerCase()
+  if (lower.includes('extreme fear')) return 'extreme-fear'
+  if (lower.includes('fear')) return 'fear'
+  if (lower.includes('neutral')) return 'neutral'
+  if (lower.includes('greed') && lower.includes('extreme')) return 'extreme-greed'
+  if (lower.includes('greed')) return 'greed'
+  return 'neutral' // Default
+}
+
+export function MarketSentimentCard() {
+  const { data, isLoading, error } = useFearGreedIndex(300000) // Refresh every 5 minutes
+
+  // Default values while loading
+  const score = data ? parseInt(data.value.toString()) : 50
+  const sentiment = data ? mapClassificationToSentiment(data.value_classification) : 'neutral'
   const config = sentimentConfig[sentiment]
-  const score = config.score
+
+  // Calculate volatility based on distance from neutral (50)
+  const volatility = Math.abs(score - 50) * 2 // 0-100 scale
+
+  if (error) {
+    return (
+      <div className="w-full bg-card border border-border rounded-3xl p-6 card-shadow">
+        <div className="flex items-center justify-center py-8">
+          <p className="text-sm text-red-500">Failed to load market sentiment data</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="w-full bg-card border border-border rounded-3xl p-6 card-shadow">
@@ -30,24 +53,26 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
           <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1">
             Market Sentiment Analysis
           </h3>
-          <h2 className="text-2xl font-bold text-foreground">{config.label}</h2>
+          <h2 className="text-2xl font-bold text-foreground">
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="animate-spin" size={20} />
+                <span className="text-lg">Loading...</span>
+              </div>
+            ) : (
+              config.label
+            )}
+          </h2>
         </div>
         <div className="text-right">
-          <div className="flex items-center gap-1 justify-end mb-1">
-            {trend24h >= 0 ? (
-              <TrendingUp className="text-[#4CC658]" size={18} fill="currentColor" />
-            ) : (
-              <TrendingDown className="text-red-500" size={18} fill="currentColor" />
-            )}
-            <span
-              className={`text-lg font-bold ${
-                trend24h >= 0 ? 'text-[#4CC658]' : 'text-red-500'
-              }`}
-            >
-              {trend24h >= 0 ? '+' : ''}{trend24h.toFixed(1)}%
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground">24h change</p>
+          {!isLoading && (
+            <>
+              <div className="flex items-center gap-2 justify-end">
+                <div className="w-2 h-2 rounded-full bg-[#4CC658] animate-pulse" />
+                <span className="text-xs text-muted-foreground font-medium">Live</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -111,7 +136,7 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
               className="fill-foreground font-bold"
               style={{ fontSize: '20px' }}
             >
-              {score}
+              {isLoading ? '...' : score}
             </text>
             <text
               x="100"
@@ -120,7 +145,7 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
               className="fill-muted-foreground"
               style={{ fontSize: '10px' }}
             >
-              Market Score
+              Fear & Greed
             </text>
           </svg>
         </div>
@@ -130,16 +155,16 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
       <div className="flex justify-between text-xs font-semibold text-muted-foreground px-1 mb-4">
         <span className="text-red-600">Extreme Fear</span>
         <span className="text-[#4CC658]">Extreme Greed</span>
-      </div>     
+      </div>
 
       {/* Volatility Bar */}
       <div className="pt-4 border-t border-border">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold text-foreground flex items-center gap-2">
-            <Flame size={14} />
-            Volatility Index
+            <Flame width={14} />
+            Market Intensity
           </span>
-          <span className="text-sm font-bold text-foreground">{volatility}%</span>
+          <span className="text-sm font-bold text-foreground">{volatility.toFixed(0)}%</span>
         </div>
         <div className="h-2 bg-border rounded-full overflow-hidden">
           <div
@@ -147,6 +172,13 @@ export function MarketSentimentCard({ volatility, trend24h, sentiment }: MarketS
             style={{ width: `${volatility}%` }}
           />
         </div>
+      </div>
+
+      {/* Data source */}
+      <div className="mt-3 pt-3 border-t border-border">
+        <p className="text-[10px] text-muted-foreground text-center">
+          Data from Alternative.me • Updates every 5 min
+        </p>
       </div>
     </div>
   )

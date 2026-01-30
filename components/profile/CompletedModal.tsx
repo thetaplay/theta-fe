@@ -3,6 +3,8 @@
 import { useState, useRef } from 'react'
 import { XMark, LightbulbFill, CheckmarkCircleFill } from '@/components/sf-symbols'
 import { useRouter } from 'next/navigation'
+import { useClaimPosition } from '@/hooks/useClaimPosition'
+import { toast } from 'sonner'
 
 interface Position {
   id: string
@@ -34,6 +36,7 @@ interface CompletedModalProps {
 export function CompletedModal({ position, isClosing, onClose, onExplain }: CompletedModalProps) {
   const [dragOffset, setDragOffset] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const [claiming, setClaiming] = useState(false)
   const startY = useRef(0)
   const currentY = useRef(0)
   const velocityY = useRef(0)
@@ -42,14 +45,34 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
   const contentRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
+  const { claimPosition, isPending } = useClaimPosition()
+
   if (!position) return null
+
+  const handleClaim = async () => {
+    if (!position.id || claiming || isPending) return
+
+    try {
+      setClaiming(true)
+      await claimPosition(BigInt(position.id))
+      toast.success('Position claimed successfully!')
+      setTimeout(() => {
+        onClose()
+      }, 1500)
+    } catch (error: any) {
+      console.error('Claim error:', error)
+      toast.error(error.message || 'Failed to claim position')
+    } finally {
+      setClaiming(false)
+    }
+  }
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const target = e.target as HTMLElement
     if (contentRef.current && contentRef.current.contains(target) && contentRef.current.scrollTop > 0) {
       return
     }
-    
+
     startY.current = e.touches[0].clientY
     currentY.current = e.touches[0].clientY
     lastTime.current = Date.now()
@@ -59,21 +82,21 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return
-    
+
     const now = Date.now()
     const deltaTime = now - lastTime.current
     const newY = e.touches[0].clientY
     const deltaY = newY - currentY.current
-    
+
     if (deltaTime > 0) {
       velocityY.current = deltaY / deltaTime
     }
-    
+
     currentY.current = newY
     lastTime.current = now
-    
+
     const diff = newY - startY.current
-    
+
     if (diff > 0) {
       setDragOffset(diff)
     } else if (diff < 0) {
@@ -83,15 +106,15 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
 
   const handleTouchEnd = () => {
     setIsDragging(false)
-    
+
     const shouldClose = dragOffset > 150 || (velocityY.current > 0.5 && dragOffset > 50)
-    
+
     if (shouldClose) {
       onClose()
     } else {
       setDragOffset(0)
     }
-    
+
     velocityY.current = 0
   }
 
@@ -101,9 +124,8 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/20 z-[100] transition-opacity ${
-          isClosing ? 'duration-300' : isDragging ? 'duration-0' : 'duration-300'
-        }`}
+        className={`fixed inset-0 bg-black/20 z-[100] transition-opacity ${isClosing ? 'duration-300' : isDragging ? 'duration-0' : 'duration-300'
+          }`}
         style={{
           opacity: isClosing ? 0 : backdropOpacity
         }}
@@ -111,11 +133,10 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
       />
 
       {/* Modal */}
-      <div 
+      <div
         ref={modalRef}
-        className={`fixed bottom-0 left-0 right-0 bg-card rounded-t-[2.5rem] shadow-2xl z-[101] flex flex-col max-h-[90%] overflow-hidden touch-none ${
-          !isClosing && !isDragging && dragOffset === 0 ? 'animate-slide-up' : ''
-        }`}
+        className={`fixed bottom-0 left-0 right-0 bg-card rounded-t-[2.5rem] shadow-2xl z-[101] flex flex-col max-h-[90%] overflow-hidden touch-none ${!isClosing && !isDragging && dragOffset === 0 ? 'animate-slide-up' : ''
+          }`}
         style={{
           transform: isClosing ? 'translateY(100%)' : isDragging || dragOffset !== 0 ? `translateY(${Math.max(0, dragOffset)}px)` : 'translateY(0)',
           transition: isDragging ? 'none' : isClosing ? 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)' : dragOffset !== 0 ? 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)' : 'none'
@@ -142,7 +163,7 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
                 <span className="text-xs font-semibold text-muted-foreground">{position.settledDate || 'Mar 24, 2024'}</span>
               </div>
             </div>
-            <button 
+            <button
               onClick={onClose}
               className="w-10 h-10 rounded-full bg-muted flex items-center justify-center"
             >
@@ -203,13 +224,14 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-3">
-            <button 
-              onClick={() => router.push('/profile/claim?id=' + position.id)}
-              className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl bg-slate-900 text-white text-sm font-bold shadow-[0_4px_0_0_#475569] active:shadow-none active:translate-y-[4px] transition-all"
+            <button
+              onClick={handleClaim}
+              disabled={claiming || isPending}
+              className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl bg-slate-900 text-white text-sm font-bold shadow-[0_4px_0_0_#475569] active:shadow-none active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Claim Funds to Wallet
+              {claiming || isPending ? 'Claiming...' : 'Claim Funds to Wallet'}
             </button>
-            <button 
+            <button
               onClick={onExplain}
               className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl bg-white border-2 border-border text-muted-foreground text-sm font-bold active:bg-muted/20 transition-all"
             >

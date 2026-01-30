@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { ReactNode } from 'react'
 
@@ -9,7 +10,7 @@ interface EventCardProps {
   title: string
   date: string
   impact: 'High' | 'Medium' | 'Low'
-  category: string
+  category: 'Crypto Events' | 'Economic Events' | 'Web3'
 }
 
 const impactColors = {
@@ -19,10 +20,9 @@ const impactColors = {
 }
 
 const iconContainerColors = {
-  Macro: 'bg-blue-100 text-blue-600',
-  Crypto: 'bg-orange-100 text-orange-600',
-  Corporate: 'bg-purple-100 text-purple-600',
-  Other: 'bg-[#4CC658]/20 text-[#4CC658]',
+  'Crypto Events': 'bg-blue-100 text-blue-600',
+  'Economic Events': 'bg-orange-100 text-orange-600',
+  'Web3': 'bg-[#4CC658]/20 text-[#4CC658]',
 }
 
 export function EventCard({
@@ -35,7 +35,7 @@ export function EventCard({
 }: EventCardProps) {
   const containerColor =
     iconContainerColors[category as keyof typeof iconContainerColors] ||
-    iconContainerColors.Other
+    iconContainerColors['Crypto Events']
 
   return (
     <Link href={`/event/${id}`}>
@@ -44,25 +44,24 @@ export function EventCard({
         <div
           className={`flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center ${containerColor}`}
         >
-          <div className="text-3xl">{icon}</div>
+          <div className={cn("text-3xl")}>{icon}</div>
         </div>
 
         {/* Content - Middle (Left Aligned) */}
         <div className="flex-1 min-w-0">
           {/* Risk Badge - Top */}
           <span
-            className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide mb-2 ${
-              impactColors[impact]
-            }`}
+            className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide mb-2 ${impactColors[impact]
+              }`}
           >
             {impact}
           </span>
-          
+
           {/* Title */}
           <h3 className="text-sm font-bold text-foreground truncate">
             {title}
           </h3>
-          
+
           {/* Predict Description */}
           <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{date}</p>
         </div>

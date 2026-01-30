@@ -5,7 +5,7 @@ export function useClaimPosition() {
     const { writeContract, data: hash, isPending } = useWriteContract()
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash })
 
-    const claim = async (positionId: bigint) => {
+    const claimPosition = async (positionId: bigint) => {
         await writeContract({
             address: CONTRACTS.CLAIM_ROUTER,
             abi: ABIS.ClaimRouter,
@@ -24,7 +24,7 @@ export function useClaimPosition() {
     }
 
     return {
-        claim,
+        claimPosition,
         claimBatch,
         isPending: isPending || isLoading,
         isSuccess,
