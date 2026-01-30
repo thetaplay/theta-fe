@@ -413,11 +413,6 @@ export default function TradePage() {
   }
 
   if (step === 'preview') {
-    // Get selected strategy details
-    const selectedStrategyDetails = STRATEGIES.find(s => s.id === selectedStrategy)
-    const selectedGoalDetails = GOALS.find(g => g.id === selectedGoal)
-    const selectedRiskDetails = RISK_LEVELS.find(r => r.id === selectedRisk)
-
     // Risk profile mapping based on selections
     const getRiskProfile = () => {
       const profiles = {
@@ -637,8 +632,6 @@ export default function TradePage() {
       confidence: selectedStrategyObj?.confidence || 'MID',
       amount: parseFloat(selectedAmount) || 100,
     }
-
-    console.log(profile);
 
     return (
       <OptionsDisplay

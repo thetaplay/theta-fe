@@ -7,7 +7,7 @@ import { formatUnits } from 'viem'
 interface Position {
   id: string
   title: string
-  status: 'active' | 'settling' | 'settled'
+  status: 'active' | 'settling' | 'settled' | 'claimed'
   maxLoss: string
   icon: string
   iconBg: string

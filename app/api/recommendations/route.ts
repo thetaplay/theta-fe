@@ -9,6 +9,7 @@ const ProfileSchema = z.object({
     riskComfort: z.enum(['CONSERVATIVE', 'MODERATE', 'AGGRESSIVE']),
     confidence: z.enum(['LOW', 'MID', 'HIGH']),
     amount: z.number().min(1),
+    testMode: z.enum(['profit', 'loss']).optional(), // For settlement testing
 })
 
 // Helper to convert BigInt to string for JSON serialization
@@ -34,12 +35,17 @@ export async function GET(request: NextRequest) {
     try {
         // Parse query params
         const searchParams = request.nextUrl.searchParams
+        const testMode = searchParams.get('testMode') as 'profit' | 'loss' | null
+
         const profile = {
             goal: searchParams.get('goal'),
             riskComfort: searchParams.get('riskComfort'),
             confidence: searchParams.get('confidence'),
             amount: Number(searchParams.get('amount')),
+            ...(testMode && { testMode }), // Add testMode if provided
         }
+
+        console.log('📊 Recommendation request:', { ...profile, testMode: testMode || 'normal' })
 
         // Validate
         const validated = ProfileSchema.parse(profile)
