@@ -1,0 +1,359 @@
+{
+    "info": {
+        "name": "ThetaPlay Backend API",
+        "description": "Complete API collection for ThetaPlay smart contract integration",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_postman_id": "thetaplay-backend-api",
+        "version": "1.0.0"
+    },
+    "item": [
+        {
+            "name": "Health Check",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is healthy', function() {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.status).to.eql('healthy');",
+                            "});",
+                            "",
+                            "pm.test('Blockchain is connected', function() {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.blockchain.connected).to.be.true;",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{BASE_URL}}/api/health",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "api",
+                        "health"
+                    ]
+                },
+                "description": "Health check endpoint to verify backend and blockchain connectivity"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Oracle Price - ETH",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Response is successful', function() {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Price is returned', function() {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.success).to.be.true;",
+                            "    pm.expect(jsonData.price).to.be.a('number');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{BASE_URL}}/api/oracle/price/ETH",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "api",
+                        "oracle",
+                        "price",
+                        "ETH"
+                    ]
+                },
+                "description": "Get current ETH price from on-chain oracle"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Oracle Price - BTC",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Response is successful', function() {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Price is returned', function() {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.success).to.be.true;",
+                            "    pm.expect(jsonData.price).to.be.a('number');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{BASE_URL}}/api/oracle/price/BTC",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "api",
+                        "oracle",
+                        "price",
+                        "BTC"
+                    ]
+                },
+                "description": "Get current BTC price from on-chain oracle"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Recommendations - Capture Upside (Moderate)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Response is successful', function() {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Recommendations are returned', function() {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.success).to.be.true;",
+                            "    pm.expect(jsonData.recommendations).to.be.an('array');",
+                            "});",
+                            "",
+                            "pm.test('Each recommendation has signed order', function() {",
+                            "    var jsonData = pm.response.json();",
+                            "    jsonData.recommendations.forEach(function(rec) {",
+                            "        pm.expect(rec).to.have.property('order');",
+                            "        pm.expect(rec).to.have.property('signature');",
+                            "        pm.expect(rec).to.have.property('nonce');",
+                            "    });",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{BASE_URL}}/api/recommendations?goal=CAPTURE_UPSIDE&riskComfort=MODERATE&confidence=HIGH&amount=1000",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "api",
+                        "recommendations"
+                    ],
+                    "query": [
+                        {
+                            "key": "goal",
+                            "value": "CAPTURE_UPSIDE",
+                            "description": "PROTECT_ASSET | CAPTURE_UPSIDE | EARN_SAFELY"
+                        },
+                        {
+                            "key": "riskComfort",
+                            "value": "MODERATE",
+                            "description": "CONSERVATIVE | MODERATE | AGGRESSIVE"
+                        },
+                        {
+                            "key": "confidence",
+                            "value": "HIGH",
+                            "description": "LOW (30 days) | MID (14 days) | HIGH (7 days)"
+                        },
+                        {
+                            "key": "amount",
+                            "value": "1000",
+                            "description": "Amount in USDC to invest"
+                        }
+                    ]
+                },
+                "description": "Get option recommendations for bullish moderate risk profile"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Recommendations - Protect Asset (Conservative)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Recommendations are PUT options', function() {",
+                            "    var jsonData = pm.response.json();",
+                            "    jsonData.recommendations.forEach(function(rec) {",
+                            "        pm.expect(rec.type).to.eql('PUT');",
+                            "    });",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{BASE_URL}}/api/recommendations?goal=PROTECT_ASSET&riskComfort=CONSERVATIVE&confidence=MID&amount=500",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "api",
+                        "recommendations"
+                    ],
+                    "query": [
+                        {
+                            "key": "goal",
+                            "value": "PROTECT_ASSET"
+                        },
+                        {
+                            "key": "riskComfort",
+                            "value": "CONSERVATIVE"
+                        },
+                        {
+                            "key": "confidence",
+                            "value": "MID"
+                        },
+                        {
+                            "key": "amount",
+                            "value": "500"
+                        }
+                    ]
+                },
+                "description": "Get protective PUT options for conservative users"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Recommendations - Earn Safely (Aggressive)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{BASE_URL}}/api/recommendations?goal=EARN_SAFELY&riskComfort=AGGRESSIVE&confidence=LOW&amount=2000",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "api",
+                        "recommendations"
+                    ],
+                    "query": [
+                        {
+                            "key": "goal",
+                            "value": "EARN_SAFELY"
+                        },
+                        {
+                            "key": "riskComfort",
+                            "value": "AGGRESSIVE"
+                        },
+                        {
+                            "key": "confidence",
+                            "value": "LOW"
+                        },
+                        {
+                            "key": "amount",
+                            "value": "2000"
+                        }
+                    ]
+                },
+                "description": "Get deep OTM PUT options for earning premium"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Recommendations - Invalid Parameters",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Returns error for invalid parameters', function() {",
+                            "    pm.response.to.have.status(400);",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.success).to.be.false;",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{BASE_URL}}/api/recommendations?goal=INVALID&riskComfort=MODERATE&confidence=HIGH&amount=1000",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "api",
+                        "recommendations"
+                    ],
+                    "query": [
+                        {
+                            "key": "goal",
+                            "value": "INVALID"
+                        },
+                        {
+                            "key": "riskComfort",
+                            "value": "MODERATE"
+                        },
+                        {
+                            "key": "confidence",
+                            "value": "HIGH"
+                        },
+                        {
+                            "key": "amount",
+                            "value": "1000"
+                        }
+                    ]
+                },
+                "description": "Test validation with invalid parameters"
+            },
+            "response": []
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Set timestamp for requests",
+                    "pm.environment.set('timestamp', new Date().getTime());"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "BASE_URL",
+            "value": "http://localhost:3000",
+            "type": "string"
+        }
+    ]
+}
