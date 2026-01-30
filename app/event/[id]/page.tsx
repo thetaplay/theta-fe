@@ -5,9 +5,9 @@ import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
-import { IOSHeader } from '@/components/IOSHeader'
+import { IOSHeader } from '@/components/layout/IOSHeader'
 import { ArrowtriangleUpFill, ArrowtriangleDownFill, ExclamationmarkCircle } from '@/components/sf-symbols'
-import IOSPageTransition from '@/components/IOSPageTransition'
+import IOSPageTransition from '@/components/layout/IOSPageTransition'
 
 interface PredictionOption {
   label: string
@@ -147,25 +147,23 @@ export default function EventDetailPage() {
               {PREDICTION_OPTIONS.map((option) => (
                 <div
                   key={option.label}
-                  className={`group relative p-5 rounded-2xl border-2 transition-all duration-200 ${
-                    selectedPrediction === option.label
+                  className={`group relative p-5 rounded-2xl border-2 transition-all duration-200 ${selectedPrediction === option.label
                       ? option.label === 'High Volatility'
                         ? 'border-yellow-500 bg-yellow-100'
                         : 'border-blue-500 bg-blue-100'
                       : option.label === 'High Volatility'
-                      ? 'border-border bg-yellow-50 hover:border-yellow-400'
-                      : 'border-border bg-blue-50 hover:border-blue-400'
-                  }`}
+                        ? 'border-border bg-yellow-50 hover:border-yellow-400'
+                        : 'border-border bg-blue-50 hover:border-blue-400'
+                    }`}
                 >
                   <div className="flex flex-col items-center gap-3">
                     <div
-                      className={`flex-shrink-0 text-3xl transition-colors ${
-                        selectedPrediction === option.label
+                      className={`flex-shrink-0 text-3xl transition-colors ${selectedPrediction === option.label
                           ? option.label === 'High Volatility'
                             ? 'text-yellow-600'
                             : 'text-blue-600'
                           : 'text-muted-foreground'
-                      }`}
+                        }`}
                     >
                       {option.icon}
                     </div>
@@ -197,7 +195,7 @@ export default function EventDetailPage() {
             {/* Slider Track - Read Only */}
             <div className="relative mb-4 py-2">
               <div className="absolute inset-0 h-3 bg-muted rounded-full top-1/2 -translate-y-1/2"></div>
-              <div 
+              <div
                 className="absolute h-3 bg-primary rounded-full top-1/2 -translate-y-1/2 transition-all duration-300"
                 style={{ width: `${confidence}%` }}
               ></div>
@@ -214,11 +212,10 @@ export default function EventDetailPage() {
             <button
               onClick={handleSubmit}
               disabled={!amount || !selectedPrediction || isSubmitting}
-              className={`w-full mt-6 py-4 font-bold rounded-2xl transition-all duration-200 active:scale-95 ${
-                amount && selectedPrediction && !isSubmitting
+              className={`w-full mt-6 py-4 font-bold rounded-2xl transition-all duration-200 active:scale-95 ${amount && selectedPrediction && !isSubmitting
                   ? 'bg-primary text-white hover:shadow-lg border-b-4 border-primary-dark active:border-b-0 active:translate-y-[2px]'
                   : 'bg-muted text-muted-foreground cursor-not-allowed'
-              }`}
+                }`}
             >
               {isSubmitting ? 'Submitting...' : 'Submit Prediction'}
             </button>

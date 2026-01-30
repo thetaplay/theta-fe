@@ -2,11 +2,13 @@ import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { Poppins } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { ThemeProvider } from '@/components/theme-provider'
+import { ThemeProvider } from '@/components/layout/theme-provider'
 import { AnimatedLayout } from '@/components/AnimatedLayout'
+import { Providers } from '@/components/providers'
 import './globals.css'
+import '@coinbase/onchainkit/styles.css'
 
-const poppins = Poppins({ 
+const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"]
 });
@@ -100,11 +102,13 @@ export default function RootLayout({
         />
       </head>
       <body className={`${poppins.className} antialiased`}>
-        <ThemeProvider>
-          <AnimatedLayout>
-            {children}
-          </AnimatedLayout>
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider>
+            <AnimatedLayout>
+              {children}
+            </AnimatedLayout>
+          </ThemeProvider>
+        </Providers>
         <Analytics />
       </body>
     </html>

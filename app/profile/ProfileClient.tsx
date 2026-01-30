@@ -1,6 +1,11 @@
 'use client'
 
-import { IOSHeader } from '@/components/IOSHeader'
+import { IOSHeader } from '@/components/layout/IOSHeader'
+import { ConnectButton } from '@/components/wallet/ConnectButton'
+import { FaucetClaim } from '@/components/FaucetClaim'
+import { useUserPositions } from '@/hooks/useUserPositions'
+import { usePositionDetails } from '@/hooks/usePositionDetails'
+import { useAccount } from 'wagmi'
 import { useState } from 'react'
 import { Calendar, BellFill, ArrowtriangleDownFill, ArrowtriangleUpFill, LightbulbFill, Shield, ChartLineUptrendXyaxis, WaterDrop, XMark } from '@/components/sf-symbols'
 
@@ -90,6 +95,8 @@ const positions: Position[] = [
 ]
 
 export function ProfileClient() {
+  const { address, isConnected } = useAccount()
+  const { positionIds } = useUserPositions()
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(null)
   const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active')
   const [isClosing, setIsClosing] = useState(false)
@@ -148,6 +155,12 @@ export function ProfileClient() {
       {/* Header */}
       <IOSHeader
         title="Active Positions"
+        rightContent={
+          <div className="flex items-center gap-2">
+            <FaucetClaim />
+            <ConnectButton />
+          </div>
+        }
       />
 
       {/* Filter Tabs */}
@@ -155,21 +168,19 @@ export function ProfileClient() {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => setActiveTab('active')}
-            className={`py-2.5 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${
-              activeTab === 'active'
-                ? 'bg-[#4CC658] text-slate-900 shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px]'
-                : 'bg-muted text-foreground border border-border'
-            }`}
+            className={`py-2.5 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${activeTab === 'active'
+              ? 'bg-[#4CC658] text-slate-900 shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px]'
+              : 'bg-muted text-foreground border border-border'
+              }`}
           >
             Active Positions
           </button>
           <button
             onClick={() => setActiveTab('completed')}
-            className={`py-2.5 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${
-              activeTab === 'completed'
-                ? 'bg-[#4CC658] text-slate-900 shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px]'
-                : 'bg-muted text-foreground border border-border'
-            }`}
+            className={`py-2.5 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${activeTab === 'completed'
+              ? 'bg-[#4CC658] text-slate-900 shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px]'
+              : 'bg-muted text-foreground border border-border'
+              }`}
           >
             Completed
           </button>
@@ -280,6 +291,8 @@ export function ProfileClient() {
           onClose={handleCloseModal}
         />
       )}
+
+      <FaucetClaim />
     </div>
   )
 }

@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { IOSHeader } from '@/components/IOSHeader'
+import { IOSHeader } from '@/components/layout/IOSHeader'
 import { supabase } from '@/lib/supabaseClient'
 import AdminSubmitQuestionModal, { AdminQuestionSubmission } from '@/components/admin/AdminSubmitQuestionModal'
 import { EventCard } from '@/components/EventCard'
-import IOSPageTransition from '@/components/IOSPageTransition'
+import IOSPageTransition from '@/components/layout/IOSPageTransition'
 
 type AdminEvent = {
   id: string
@@ -91,9 +91,9 @@ export default function AdminPage() {
       const dateString = endAt.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
 
       const icon = data.category === 'Economic Events' || data.category === 'Business' ? 'ChartLineUptrendXyaxis' :
-                   data.category === 'Crypto Events' ? 'BoltFill' :
-                   data.category === 'Web3' ? 'BoltFill' :
-                   'ChartLineUptrendXyaxis'
+        data.category === 'Crypto Events' ? 'BoltFill' :
+          data.category === 'Web3' ? 'BoltFill' :
+            'ChartLineUptrendXyaxis'
 
       const status = endAt > new Date() ? 'ongoing' : 'completed'
 
@@ -129,7 +129,7 @@ export default function AdminPage() {
           end_at: endAt.toISOString(),
         })
         .select()
-      
+
       if (insertError) {
         console.error('Insert error:', insertError)
         throw new Error(`Failed to save event: ${insertError.message}`)
