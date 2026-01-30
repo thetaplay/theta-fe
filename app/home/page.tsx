@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { IOSHeader } from '@/components/IOSHeader'
+import { IOSHeader } from '@/components/layout/IOSHeader'
 import { MarketSentimentCard } from '@/components/MarketSentimentCard'
 import { BoltFill, Flame } from '@/components/sf-symbols'
 
@@ -60,7 +60,7 @@ export default function HomePage() {
                 <p className="text-xs text-purple-300/70">mins</p>
               </div>
             </div>
-            <button 
+            <button
               className="w-full py-2.5 px-6 bg-white text-slate-900 font-bold rounded-xl shadow-[0_4px_0_0_#cbd5e1] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-1.5"
               onClick={() => router.push('/trade')}
             >
@@ -74,7 +74,7 @@ export default function HomePage() {
           <MarketSentimentCard
             volatility={65}
             trend24h={2.3}
-            sentiment="greed" 
+            sentiment="greed"
           />
         </div>
 
@@ -116,7 +116,7 @@ export default function HomePage() {
           <p className="text-sm text-muted-foreground mb-4">
             Start making predictions on upcoming market events and build your reputation.
           </p>
-          <button 
+          <button
             className="flex items-center justify-center gap-1.5 py-2.5 px-6 rounded-xl bg-[#4CC658] text-slate-900 font-bold shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all w-full"
             onClick={() => router.push('/event')}
           >

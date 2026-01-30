@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import IOSPageTransition from '@/components/IOSPageTransition'
+import IOSPageTransition from '@/components/layout/IOSPageTransition'
+import { OptionsDisplay } from './OptionsDisplay'
 
 type TradeStep = 'goal' | 'risk' | 'strategy' | 'preview' | 'options' | 'success'
 
@@ -147,11 +148,10 @@ export default function TradePage() {
                 <button
                   key={goal.id}
                   onClick={() => setSelectedGoal(goal.id)}
-                  className={`w-full text-left p-6 rounded-3xl border-2 flex items-center gap-5 transition-all ${
-                    selectedGoal === goal.id
-                      ? 'border-primary bg-primary/5 ring-4 ring-primary/20 shadow-lg'
-                      : 'border-slate-100 bg-white hover:border-slate-200'
-                  }`}
+                  className={`w-full text-left p-6 rounded-3xl border-2 flex items-center gap-5 transition-all ${selectedGoal === goal.id
+                    ? 'border-primary bg-primary/5 ring-4 ring-primary/20 shadow-lg'
+                    : 'border-slate-100 bg-white hover:border-slate-200'
+                    }`}
                 >
                   <div className={`w-16 h-16 rounded-2xl ${goal.color} flex items-center justify-center text-3xl flex-shrink-0`}>
                     {goal.icon}
@@ -220,16 +220,14 @@ export default function TradePage() {
                 <button
                   key={risk.id}
                   onClick={() => setSelectedRisk(risk.id)}
-                  className={`w-full text-left p-5 rounded-3xl border-2 flex items-center gap-4 transition-all ${
-                    selectedRisk === risk.id
-                      ? 'border-primary bg-white ring-4 ring-primary/20'
-                      : 'border-slate-100 bg-white/50 hover:border-slate-200'
-                  }`}
+                  className={`w-full text-left p-5 rounded-3xl border-2 flex items-center gap-4 transition-all ${selectedRisk === risk.id
+                    ? 'border-primary bg-white ring-4 ring-primary/20'
+                    : 'border-slate-100 bg-white/50 hover:border-slate-200'
+                    }`}
                 >
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 ${
-                    risk.id === 'conservative' ? 'bg-blue-50' :
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 ${risk.id === 'conservative' ? 'bg-blue-50' :
                     risk.id === 'moderate' ? 'bg-purple-50' : 'bg-orange-50'
-                  }`}>
+                    }`}>
                     {risk.icon}
                   </div>
                   <div className="flex-1">
@@ -298,11 +296,10 @@ export default function TradePage() {
                 <button
                   key={strategy.id}
                   onClick={() => setSelectedStrategy(strategy.id)}
-                  className={`w-full text-left p-5 rounded-3xl border-2 flex gap-4 transition-all ${
-                    selectedStrategy === strategy.id
-                      ? 'border-primary bg-primary/5 ring-2 ring-primary'
-                      : 'border-slate-100 bg-white hover:border-slate-200'
-                  }`}
+                  className={`w-full text-left p-5 rounded-3xl border-2 flex gap-4 transition-all ${selectedStrategy === strategy.id
+                    ? 'border-primary bg-primary/5 ring-2 ring-primary'
+                    : 'border-slate-100 bg-white hover:border-slate-200'
+                    }`}
                 >
                   <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0">
                     {strategy.icon}
@@ -448,128 +445,21 @@ export default function TradePage() {
     )
   }
 
+
   if (step === 'options') {
+    const profile = {
+      goal: selectedGoal || 'protect',
+      riskComfort: selectedRisk || 'conservative',
+      confidence: 'mid',
+      amount: parseFloat(tradeAmount) || 100,
+    }
+
     return (
-      <IOSPageTransition>
-        <div className="fixed inset-0 w-screen h-screen flex flex-col bg-slate-50 z-[9999]">
-          {/* Header */}
-          <div className="px-6 pt-6 pb-4 flex items-center justify-between sticky top-0 bg-white/95 border-b border-slate-100 z-10">
-            <button
-              onClick={() => setStep('preview')}
-              className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50"
-            >
-              ←
-            </button>
-            <div className="flex-1 px-4">
-              <div className="flex gap-1 justify-center">
-                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
-                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
-                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
-                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
-              </div>
-            </div>
-            <button
-              onClick={() => window.location.href = '/'}
-              className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-bold"
-            >
-              ✕
-            </button>
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 overflow-y-auto px-6 pt-6 pb-32">
-            <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-slate-900 leading-tight mb-2">Similar Trading Options</h2>
-              <p className="text-sm font-medium text-slate-500">Based on traders like you</p>
-            </div>
-
-            <div className="space-y-4">
-              {/* Option Card 1 */}
-              <div className="bg-white rounded-3xl border-2 border-slate-100 p-6 hover:border-primary/50 transition-all cursor-pointer">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-extrabold text-slate-900">Conservative Shield</h3>
-                    <p className="text-xs text-slate-500 mt-1">Protective strategy with 85% win rate</p>
-                  </div>
-                  <span className="text-2xl">🛡️</span>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Avg Return</span>
-                    <span className="font-bold text-primary">+12.5%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Max Loss</span>
-                    <span className="font-bold text-orange-500">-8%</span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-100">
-                    <p className="text-[10px] text-slate-400 font-bold">Used by 2,341 traders</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Option Card 2 */}
-              <div className="bg-white rounded-3xl border-2 border-slate-100 p-6 hover:border-primary/50 transition-all cursor-pointer">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-extrabold text-slate-900">Balanced Growth</h3>
-                    <p className="text-xs text-slate-500 mt-1">Moderate risk with steady gains</p>
-                  </div>
-                  <span className="text-2xl">⚖️</span>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Avg Return</span>
-                    <span className="font-bold text-primary">+24.3%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Max Loss</span>
-                    <span className="font-bold text-orange-500">-15%</span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-100">
-                    <p className="text-[10px] text-slate-400 font-bold">Used by 5,128 traders</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Option Card 3 */}
-              <div className="bg-white rounded-3xl border-2 border-slate-100 p-6 hover:border-primary/50 transition-all cursor-pointer">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-extrabold text-slate-900">Aggressive Bull</h3>
-                    <p className="text-xs text-slate-500 mt-1">High risk, high reward strategy</p>
-                  </div>
-                  <span className="text-2xl">⚡</span>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Avg Return</span>
-                    <span className="font-bold text-primary">+48.7%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Max Loss</span>
-                    <span className="font-bold text-orange-500">-35%</span>
-                  </div>
-                  <div className="pt-2 border-t border-slate-100">
-                    <p className="text-[10px] text-slate-400 font-bold">Used by 1,856 traders</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-50 space-y-4">
-            <p className="text-center text-xs font-bold text-slate-400">Uncomment button below to execute trade</p>
-            {/* <button
-              onClick={handleContinue}
-              className="w-full bg-primary hover:bg-primary/90 text-slate-900 py-5 rounded-2xl font-black text-lg shadow-xl transition-all active:scale-95"
-            >
-              Execute Trade ⚡
-            </button> */}
-          </div>
-        </div>
-      </IOSPageTransition>
+      <OptionsDisplay
+        profile={profile}
+        onBack={handleBack}
+        onSuccess={() => setStep('success')}
+      />
     )
   }
 

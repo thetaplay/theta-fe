@@ -1,6 +1,6 @@
-import { IOSHeader } from '@/components/IOSHeader'
+import { IOSHeader } from '@/components/layout/IOSHeader'
 import { BookFill, PlayFill, Award } from '@/components/sf-symbols'
-import IOSPageTransition from '@/components/IOSPageTransition' // Import IOSPageTransition
+import IOSPageTransition from '@/components/layout/IOSPageTransition' // Import IOSPageTransition
 
 export default function LearnPage() {
   const courses = [

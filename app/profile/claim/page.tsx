@@ -1,6 +1,6 @@
 'use client'
 
-import { IOSHeader } from '@/components/IOSHeader'
+import { IOSHeader } from '@/components/layout/IOSHeader'
 import { ChevronLeft } from '@/components/sf-symbols'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
@@ -28,7 +28,7 @@ export default function ClaimPage() {
       <IOSHeader
         title="Claim Funds"
         leftContent={
-          <button 
+          <button
             onClick={() => router.back()}
             className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors"
           >

@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { IOSHeader } from '@/components/IOSHeader'
+import { IOSHeader } from '@/components/layout/IOSHeader'
 import { EventCard } from '@/components/EventCard'
 import { CategoryPills } from '@/components/CategoryPills'
 import { BoltFill, DollarsignCircleFill, ChartLineUptrendXyaxis, Magnifyingglass, BellFill } from '@/components/sf-symbols'
-import IOSPageTransition from '@/components/IOSPageTransition'
+import IOSPageTransition from '@/components/layout/IOSPageTransition'
 
 import { supabase } from '@/lib/supabaseClient'
 const CATEGORIES = ['All', 'Crypto Events', 'Economic Events', 'Web3']

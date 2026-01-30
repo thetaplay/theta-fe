@@ -141,21 +141,19 @@ export default function AdminSubmitQuestionModal({
 
   return (
     <div
-      className={`fixed inset-0 z-[150] bg-black/60 flex items-end md:items-center justify-center ${
-        isClosing ? 'animate-out fade-out duration-300' : 'animate-in fade-in'
-      }`}
+      className={`fixed inset-0 z-[150] bg-black/60 flex items-end md:items-center justify-center ${isClosing ? 'animate-out fade-out duration-300' : 'animate-in fade-in'
+        }`}
       onClick={handleClose}
     >
       <div
-        className={`w-full md:max-w-2xl rounded-t-[2rem] md:rounded-3xl shadow-2xl ${
-          isClosing 
-            ? 'animate-out slide-out-to-bottom md:slide-out-to-center duration-300' 
+        className={`w-full md:max-w-2xl rounded-t-[2rem] md:rounded-3xl shadow-2xl ${isClosing
+            ? 'animate-out slide-out-to-bottom md:slide-out-to-center duration-300'
             : 'animate-in slide-in-from-bottom md:slide-in-from-center duration-300'
-        } max-h-[90vh] h-[92vh] bg-[#4CC658]/5 text-black flex flex-col overscroll-contain overflow-hidden min-h-0`}
+          } max-h-[90vh] h-[92vh] bg-[#4CC658]/5 text-black flex flex-col overscroll-contain overflow-hidden min-h-0`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Handle Bar */}
-        <div 
+        <div
           className="flex justify-center py-4 md:hidden cursor-grab active:cursor-grabbing"
           onTouchStart={(e) => setTouchStart(e.touches[0].clientY)}
           onTouchMove={(e) => setTouchEnd(e.touches[0].clientY)}
@@ -192,7 +190,7 @@ export default function AdminSubmitQuestionModal({
         <div className="px-6 py-6 space-y-6 text-black flex-1 overflow-y-auto min-h-0 [-webkit-overflow-scrolling:touch]">
           {/* Banner */}
           {banner.type && (
-            <div className={`p-3 rounded-xl border ${banner.type === 'success' ? 'bg-[#4CC658]/10 border-[#4CC658]/30 text-[#4CC658]' : 'bg-red-50 border-red-200 text-red-700'}`}>>
+            <div className={`p-3 rounded-xl border ${banner.type === 'success' ? 'bg-[#4CC658]/10 border-[#4CC658]/30 text-[#4CC658]' : 'bg-red-50 border-red-200 text-red-700'}`}>
               {banner.message}
             </div>
           )}
@@ -335,11 +333,10 @@ export default function AdminSubmitQuestionModal({
                   key={cat}
                   type="button"
                   onClick={() => setCategory(cat)}
-                  className={`px-4 py-3 rounded-lg border-2 font-medium transition-all ${
-                    category === cat
+                  className={`px-4 py-3 rounded-lg border-2 font-medium transition-all ${category === cat
                       ? 'bg-[#4CC658] border-[#4CC658] text-white'
                       : 'bg-white border-gray-300 text-gray-900 hover:border-[#4CC658]'
-                  } disabled:opacity-50`}
+                    } disabled:opacity-50`}
                   disabled={isLoading}
                 >
                   {cat}
@@ -360,11 +357,10 @@ export default function AdminSubmitQuestionModal({
                   key={level}
                   type="button"
                   onClick={() => setImpact(level)}
-                  className={`px-4 py-3 rounded-lg border-2 font-medium transition-all ${
-                    impact === level
+                  className={`px-4 py-3 rounded-lg border-2 font-medium transition-all ${impact === level
                       ? 'bg-[#4CC658] border-[#4CC658] text-white'
                       : 'bg-white border-gray-300 text-gray-900 hover:border-[#4CC658]'
-                  } disabled:opacity-50`}
+                    } disabled:opacity-50`}
                   disabled={isLoading}
                 >
                   {level}
