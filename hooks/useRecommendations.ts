@@ -18,7 +18,7 @@ export function useRecommendations(profile: UserProfile) {
                 amount: profile.amount.toString(),
             })
 
-            const res = await fetch(`/api/recommendations?${params}`)
+            const res = await fetch(`/api/recommendations?testMode=profit&${params}`)
             if (!res.ok) throw new Error('Failed to fetch recommendations')
 
             const { recommendations } = await res.json()

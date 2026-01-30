@@ -9,7 +9,7 @@ export function useClaimPosition() {
         await writeContract({
             address: CONTRACTS.CLAIM_ROUTER,
             abi: ABIS.ClaimRouter,
-            functionName: 'claimSingle',
+            functionName: 'claim',
             args: [positionId],
         })
     }

@@ -5,6 +5,7 @@ import { useBuyOption } from '@/hooks/useBuyOption'
 import { useAccount } from 'wagmi'
 import { useState, useEffect } from 'react'
 import { ConnectButton } from '@/components/wallet/ConnectButton'
+import { cn } from '@/lib/utils'
 
 interface RecommendationCardProps {
     recommendation: any
@@ -70,16 +71,17 @@ function RecommendationCard({ recommendation, onBuy, buying }: RecommendationCar
 
 interface OptionsDisplayProps {
     profile: {
-        goal: string
-        riskComfort: string
-        confidence: string
-        amount: number
+        goal?: string
+        riskComfort?: string
+        confidence?: string
+        amount?: number
     }
+    header?: boolean
     onBack: () => void
     onSuccess: () => void
 }
 
-export function OptionsDisplay({ profile, onBack, onSuccess }: OptionsDisplayProps) {
+export function OptionsDisplay({ profile, header = true, onBack, onSuccess }: OptionsDisplayProps) {
     const { isConnected } = useAccount()
     const [selectedRec, setSelectedRec] = useState<any>(null)
     const [transactionError, setTransactionError] = useState<string | null>(null)
@@ -173,9 +175,9 @@ export function OptionsDisplay({ profile, onBack, onSuccess }: OptionsDisplayPro
     }
 
     return (
-        <div className="fixed inset-0 w-screen h-screen flex flex-col bg-slate-50 z-[9999]">
+        <div className={cn(header && "w-screen h-screen flex flex-col fixed inset-0 z-[10]")}>
             {/* Header */}
-            <div className="px-6 pt-6 pb-4 flex items-center justify-between sticky top-0 bg-white/95 border-b border-slate-100 z-10">
+            {header && <div className="px-6 pt-6 pb-4 flex items-center justify-between sticky top-0 bg-white/95 border-b border-slate-100 z-10">
                 <button
                     onClick={onBack}
                     disabled={isPending}
@@ -198,9 +200,10 @@ export function OptionsDisplay({ profile, onBack, onSuccess }: OptionsDisplayPro
                     ✕
                 </button>
             </div>
+            }
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto px-6 pt-6 pb-32">
+            <div className={cn("flex-1 overflow-y-auto", header && "px-6 pt-6 pb-32")}>
                 <div className="mb-8">
                     <h2 className="text-2xl font-extrabold text-slate-900 leading-tight mb-2">
                         AI Recommended Options

@@ -9,7 +9,7 @@ import { Ethereum } from '../sf-symbols/Ethereum'
 interface Position {
   id: string
   title: string
-  status: 'active' | 'settling' | 'settled'
+  status: 'active' | 'settling' | 'settled' | 'claimed'
   endsIn?: string
   maxLoss: string
   icon: string

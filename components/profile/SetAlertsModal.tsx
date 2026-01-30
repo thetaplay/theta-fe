@@ -6,7 +6,7 @@ import { XMark, BellFill } from '@/components/sf-symbols'
 interface Position {
   id: string
   title: string
-  status: 'active' | 'settling' | 'settled'
+  status: 'active' | 'settling' | 'settled' | 'claimed'
   maxLoss: string
   icon: string
   iconBg: string
@@ -49,7 +49,7 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
     if (contentRef.current && contentRef.current.contains(target) && contentRef.current.scrollTop > 0) {
       return
     }
-    
+
     startY.current = e.touches[0].clientY
     currentY.current = e.touches[0].clientY
     lastTime.current = Date.now()
@@ -59,21 +59,21 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return
-    
+
     const now = Date.now()
     const deltaTime = now - lastTime.current
     const newY = e.touches[0].clientY
     const deltaY = newY - currentY.current
-    
+
     if (deltaTime > 0) {
       velocityY.current = deltaY / deltaTime
     }
-    
+
     currentY.current = newY
     lastTime.current = now
-    
+
     const diff = newY - startY.current
-    
+
     if (diff > 0) {
       setDragOffset(diff)
     } else if (diff < 0) {
@@ -83,15 +83,15 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
 
   const handleTouchEnd = () => {
     setIsDragging(false)
-    
+
     const shouldClose = dragOffset > 150 || (velocityY.current > 0.5 && dragOffset > 50)
-    
+
     if (shouldClose) {
       onClose()
     } else {
       setDragOffset(0)
     }
-    
+
     velocityY.current = 0
   }
 
@@ -101,9 +101,8 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/20 z-[100] transition-opacity ${
-          isClosing ? 'duration-300' : isDragging ? 'duration-0' : 'duration-300'
-        }`}
+        className={`fixed inset-0 bg-black/20 z-[100] transition-opacity ${isClosing ? 'duration-300' : isDragging ? 'duration-0' : 'duration-300'
+          }`}
         style={{
           opacity: isClosing ? 0 : backdropOpacity
         }}
@@ -111,11 +110,10 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
       />
 
       {/* Modal */}
-      <div 
+      <div
         ref={modalRef}
-        className={`fixed bottom-0 left-0 right-0 bg-card rounded-t-[2.5rem] shadow-2xl z-[101] flex flex-col max-h-[90%] overflow-hidden touch-none ${
-          !isClosing && !isDragging && dragOffset === 0 ? 'animate-slide-up' : ''
-        }`}
+        className={`fixed bottom-0 left-0 right-0 bg-card rounded-t-[2.5rem] shadow-2xl z-[101] flex flex-col max-h-[90%] overflow-hidden touch-none ${!isClosing && !isDragging && dragOffset === 0 ? 'animate-slide-up' : ''
+          }`}
         style={{
           transform: isClosing ? 'translateY(100%)' : isDragging || dragOffset !== 0 ? `translateY(${Math.max(0, dragOffset)}px)` : 'translateY(0)',
           transition: isDragging ? 'none' : isClosing ? 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)' : dragOffset !== 0 ? 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)' : 'none'
@@ -134,7 +132,7 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-extrabold text-foreground">Manage Alerts</h2>
-            <button 
+            <button
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center rounded-full bg-muted"
             >
@@ -167,7 +165,7 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
                 <h4 className="text-sm font-bold text-foreground">Expiry reminder</h4>
                 <p className="text-xs text-muted-foreground">Notify me 4 hours before this position expires.</p>
               </div>
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation()
                   setExpiryAlert(!expiryAlert)
@@ -191,7 +189,7 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
                 <h4 className="text-sm font-bold text-foreground">Price move warning</h4>
                 <p className="text-xs text-muted-foreground">Alert me if the asset price moves by more than 5%.</p>
               </div>
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation()
                   setPriceAlert(!priceAlert)
@@ -212,7 +210,7 @@ export function SetAlertsModal({ position, isClosing, onClose }: SetAlertsModalP
 
           {/* Save Button */}
           <div className="pt-4">
-            <button 
+            <button
               onClick={handleSave}
               className="w-full bg-[#4CC658] text-white font-extrabold py-4 rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2"
             >

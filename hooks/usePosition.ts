@@ -33,13 +33,6 @@ export function usePosition(positionId: bigint | undefined) {
         },
     })
 
-    // Debug logging
-    console.log('=== usePosition Debug ===')
-    console.log('positionId:', positionId?.toString())
-    console.log('data:', data)
-    console.log('isLoading:', isLoading)
-    console.log('error:', error)
-
     if (!data) {
         return {
             position: null,
@@ -51,7 +44,6 @@ export function usePosition(positionId: bigint | undefined) {
 
     // Parse the response - wagmi already returns as object structure
     const positionData = data as any
-    console.log('positionData:', positionData)
 
     const position: Position = {
         user: positionData.user,
@@ -87,6 +79,7 @@ export function usePosition(positionId: bigint | undefined) {
             : 0,
         expiryDate: new Date(Number(position.expiry) * 1000),
         isExpired: Date.now() / 1000 > Number(position.expiry),
+        statusPosition: position.status,
         statusText: ['ACTIVE', 'SETTLED', 'CLAIMED'][position.status] as 'ACTIVE' | 'SETTLED' | 'CLAIMED',
     }
 }
