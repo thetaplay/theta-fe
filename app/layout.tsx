@@ -14,14 +14,14 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Market Predictions - iOS PWA',
-  description: 'Predict market events with native iOS-style PWA',
-  generator: 'v0.app',
-  applicationName: 'Market Predictions',
+  title: 'ThetaPlay - Trade Options',
+  description: 'Trade options on ThetaPlay',
+  generator: 'ThetaPlay',
+  applicationName: 'ThetaPlay',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Market Predictions',
+    title: 'ThetaPlay',
   },
   icons: {
     icon: [

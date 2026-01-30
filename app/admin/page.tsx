@@ -1,11 +1,10 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { IOSHeader } from '@/components/layout/IOSHeader'
+import { PageLayout } from '@/components/layout/PageLayout'
 import { supabase } from '@/lib/supabaseClient'
 import AdminSubmitQuestionModal, { AdminQuestionSubmission } from '@/components/admin/AdminSubmitQuestionModal'
 import { EventCard } from '@/components/EventCard'
-import IOSPageTransition from '@/components/layout/IOSPageTransition'
 
 type AdminEvent = {
   id: string
@@ -153,63 +152,57 @@ export default function AdminPage() {
   }
 
   return (
-    <IOSPageTransition>
-      <div className="w-full h-screen flex flex-col">
-        <IOSHeader
-          title="Admin"
-          rightContent={
-            <button onClick={() => setOpenModal(true)} className="px-4 py-2 rounded-xl bg-primary text-white font-bold shadow-sm active:scale-95">
-              Create Event
-            </button>
-          }
-        />
-
-        <div className="flex-1 overflow-y-auto pb-24 px-4 md:px-6 lg:px-8 pt-20 md:pt-24 lg:pt-24 mt-0">
-          {/* Tabs */}
-          <div className="flex gap-2 mb-4">
-            {TABS.map(t => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`px-3 py-2 rounded-xl border ${tab === t ? 'bg-primary text-white border-primary' : 'bg-card border-border text-foreground'} font-bold text-xs active:scale-95`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {/* List */}
-          <div className="space-y-3">
-            {loading ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground text-sm">Loading events...</p>
-              </div>
-            ) : error ? (
-              <div className="text-center py-8">
-                <p className="text-red-600 text-sm">Failed to load: {error}</p>
-              </div>
-            ) : filtered.length > 0 ? (
-              filtered.map((event) => (
-                <EventCard
-                  key={event.id}
-                  id={event.id}
-                  icon={iconFromName(event.icon)}
-                  title={event.title}
-                  date={event.date ?? ''}
-                  impact={(event.impact ?? 'Medium') as 'Low' | 'Medium' | 'High'}
-                  category={event.category}
-                />
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-sm">No events</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <AdminSubmitQuestionModal isOpen={openModal} onClose={() => setOpenModal(false)} onSubmit={handleSubmit} isLoading={submitting} />
+    <PageLayout
+      title="Admin"
+      rightContent={
+        <button onClick={() => setOpenModal(true)} className="px-4 py-2 rounded-xl bg-primary text-white font-bold shadow-sm active:scale-95">
+          Create Event
+        </button>
+      }
+    >
+      {/* Tabs */}
+      <div className="flex gap-2 mb-4">
+        {TABS.map(t => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-3 py-2 rounded-xl border ${tab === t ? 'bg-primary text-white border-primary' : 'bg-card border-border text-foreground'} font-bold text-xs active:scale-95`}
+          >
+            {t}
+          </button>
+        ))}
       </div>
-    </IOSPageTransition>
+
+      {/* List */}
+      <div className="space-y-3">
+        {loading ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground text-sm">Loading events...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-8">
+            <p className="text-red-600 text-sm">Failed to load: {error}</p>
+          </div>
+        ) : filtered.length > 0 ? (
+          filtered.map((event) => (
+            <EventCard
+              key={event.id}
+              id={event.id}
+              icon={iconFromName(event.icon)}
+              title={event.title}
+              date={event.date ?? ''}
+              impact={(event.impact ?? 'Medium') as 'Low' | 'Medium' | 'High'}
+              category={event.category}
+            />
+          ))
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-sm">No events</p>
+          </div>
+        )}
+      </div>
+
+      <AdminSubmitQuestionModal isOpen={openModal} onClose={() => setOpenModal(false)} onSubmit={handleSubmit} isLoading={submitting} />
+    </PageLayout>
   )
 }

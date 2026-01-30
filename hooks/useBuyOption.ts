@@ -1,7 +1,7 @@
 import { useWriteContract, useWaitForTransactionReceipt, useAccount } from 'wagmi'
 import { CONTRACTS, ABIS } from '@/lib/blockchain/contracts'
 import { parseUnits } from 'viem'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { publicClient } from '@/lib/blockchain/client'
 
 export function useBuyOption() {
@@ -11,6 +11,13 @@ export function useBuyOption() {
 
     const { writeContract, data: hash, isPending } = useWriteContract()
     const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+
+    // Auto-update step to success when transaction confirms
+    useEffect(() => {
+        if (isSuccess && step === 'buying') {
+            setStep('success')
+        }
+    }, [isSuccess, step])
 
     const checkAndApprove = async (amount: number) => {
         if (!address) throw new Error('Wallet not connected')
@@ -58,17 +65,31 @@ export function useBuyOption() {
         setError(null)
 
         try {
+            console.log("order", order)
+            console.log("nonce", nonce)
+            console.log("signature", signature)
+
+            // Convert signature to bytes format
+            const signatureBytes = signature as `0x${string}`
+
+            // fillOrder expects: (order, nonce, signature, referrer, strategyId)
+            // referrer: address (use zero address if no referrer)
+            // strategyId: bytes32 (use zero bytes32 for default strategy)
+            const referrer = '0x0000000000000000000000000000000000000000' as `0x${string}`
+            const strategyId = '0x0000000000000000000000000000000000000000000000000000000000000000' as `0x${string}`
+
             await writeContract({
                 address: CONTRACTS.MOCK_OPTION_BOOK,
                 abi: ABIS.MockOptionBook,
                 functionName: 'fillOrder',
-                args: [order, BigInt(nonce), signature as `0x${string}`],
+                args: [order, BigInt(nonce), signatureBytes, referrer, strategyId],
             })
 
-            setStep('success')
+            // Transaction sent, waiting for confirmation...
         } catch (err: any) {
             setError(err.message || 'Transaction failed')
             setStep('error')
+            console.log("err", err)
             throw err
         }
     }

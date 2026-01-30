@@ -3,7 +3,7 @@
 import { useRecommendations } from '@/hooks/useRecommendations'
 import { useBuyOption } from '@/hooks/useBuyOption'
 import { useAccount } from 'wagmi'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ConnectButton } from '@/components/wallet/ConnectButton'
 
 interface RecommendationCardProps {
@@ -41,20 +41,20 @@ function RecommendationCard({ recommendation, onBuy, buying }: RecommendationCar
                 <div className="flex justify-between text-sm">
                     <span className="text-slate-600">Potential PnL</span>
                     <span className="font-bold text-primary">
-                        +${metadata?.potentialPnl?.toFixed(2) || '0.00'}
+                        +${metadata?.maxProfit?.toFixed(2) || '0.00'}
                     </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                {/* <div className="flex justify-between text-sm">
                     <span className="text-slate-600">ROI</span>
                     <span className="font-bold text-blue-600">
                         +{metadata?.roi || '0'}%
                     </span>
-                </div>
+                </div> */}
             </div>
 
             <div className="pt-3 border-t border-slate-100 mb-4">
                 <p className="text-xs text-slate-500 font-medium mb-2">Why this option?</p>
-                <p className="text-xs text-slate-700">{metadata?.reasoning || 'AI recommended'}</p>
+                <p className="text-xs text-slate-700">{metadata?.explanation || 'AI recommended'}</p>
             </div>
 
             <button
@@ -80,8 +80,9 @@ interface OptionsDisplayProps {
 }
 
 export function OptionsDisplay({ profile, onBack, onSuccess }: OptionsDisplayProps) {
-    const { address, isConnected } = useAccount()
+    const { isConnected } = useAccount()
     const [selectedRec, setSelectedRec] = useState<any>(null)
+    const [transactionError, setTransactionError] = useState<string | null>(null)
 
     // Map UI values to API values
     const apiProfile = {
@@ -89,40 +90,60 @@ export function OptionsDisplay({ profile, onBack, onSuccess }: OptionsDisplayPro
             profile.goal === 'upside' ? 'CAPTURE_UPSIDE' : 'EARN_SAFELY',
         riskComfort: profile.riskComfort === 'conservative' ? 'CONSERVATIVE' :
             profile.riskComfort === 'moderate' ? 'MODERATE' : 'AGGRESSIVE',
-        confidence: profile.confidence === 'high' ? 'HIGH' :
-            profile.confidence === 'mid' ? 'MID' : 'LOW',
+        confidence: profile.confidence, // Already in uppercase: 'HIGH', 'MID', or 'LOW'
         amount: profile.amount || 100,
     }
 
     const { data: recommendations, isLoading, error } = useRecommendations(apiProfile as any)
-    const { checkAndApprove, buyOption, step, error: buyError, isPending, reset } = useBuyOption()
+    const { checkAndApprove, buyOption, step, error: buyError, isPending, isSuccess, reset } = useBuyOption()
+
+    // Listen for transaction success and call onSuccess
+    useEffect(() => {
+        if (isSuccess && step === 'success') {
+            onSuccess()
+        }
+    }, [isSuccess, step, onSuccess])
 
     const handleBuy = async (rec: any) => {
         if (!isConnected) {
-            alert('Please connect your wallet first')
+            setTransactionError('Please connect your wallet first')
             return
         }
 
         setSelectedRec(rec)
+        setTransactionError(null) // Clear previous errors
 
         try {
-            // Step 1: Check approval and approve if needed
-            const needsApproval = await checkAndApprove(rec.premium)
+            // Step 1: Check and approve if needed (this waits for approval to complete)
+            await checkAndApprove(rec.premium)
 
-            if (needsApproval && isPending) {
-                // Wait for approval transaction
-                return
-            }
-
-            // Step 2: Buy option
+            // Step 2: Buy option (automatically proceeds after approval if needed)
             await buyOption(rec.order, rec.nonce, rec.signature)
 
-            // Success!
-            onSuccess()
+            // Success will be handled by useEffect when transaction confirms
         } catch (err: any) {
             console.error('Buy error:', err)
-            alert(err.message || 'Transaction failed')
+
+            // Detailed error messages
+            let errorMessage = 'Transaction failed'
+
+            if (err.message) {
+                if (err.message.includes('User rejected')) {
+                    errorMessage = 'Transaction cancelled by user'
+                } else if (err.message.includes('insufficient funds')) {
+                    errorMessage = 'Insufficient balance to complete transaction'
+                } else if (err.message.includes('allowance')) {
+                    errorMessage = 'Token approval failed. Please try again'
+                } else if (err.message.includes('nonce')) {
+                    errorMessage = 'Invalid transaction nonce. Please refresh and try again'
+                } else {
+                    errorMessage = err.message
+                }
+            }
+
+            setTransactionError(errorMessage)
             reset()
+            setSelectedRec(null)
         }
     }
 
@@ -210,11 +231,25 @@ export function OptionsDisplay({ profile, onBack, onSuccess }: OptionsDisplayPro
                     </div>
                 )}
 
-                {/* Error */}
+                {/* Transaction Error */}
+                {transactionError && (
+                    <div className="mb-6 p-4 rounded-2xl bg-red-50 border-2 border-red-200">
+                        <div className="flex items-center justify-between gap-3">
+                            <p className="text-sm font-bold text-red-900">{transactionError}</p>
+                            <button
+                                onClick={() => setTransactionError(null)}
+                                className="text-red-400 hover:text-red-600 font-bold"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {(error || buyError) && (
                     <div className="mb-6 p-4 rounded-2xl bg-red-50 border-2 border-red-200">
                         <p className="text-sm font-bold text-red-900">
-                            {error || buyError}
+                            {error?.message || buyError || 'An error occurred'}
                         </p>
                     </div>
                 )}

@@ -2,7 +2,13 @@
 
 import { useState } from 'react'
 import IOSPageTransition from '@/components/layout/IOSPageTransition'
-import { OptionsDisplay } from './OptionsDisplay'
+import { OptionsDisplay } from '@/components/trade/OptionsDisplay'
+import { useMockUSDC } from '@/hooks/useMockUSDC'
+import { ExclamationmarkCircle } from '@/components/sf-symbols'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 
 type TradeStep = 'goal' | 'risk' | 'strategy' | 'preview' | 'options' | 'success'
 
@@ -54,6 +60,7 @@ const RISK_LEVELS = [
 const STRATEGIES = [
   {
     id: 'safety-shield',
+    confidence: 'LOW',
     title: 'The Safety Shield',
     subtitle: 'Protective Put',
     description: 'Keeps your profits safe even if the market crashes. Like insurance for your assets.',
@@ -61,6 +68,7 @@ const STRATEGIES = [
   },
   {
     id: 'steady-climber',
+    confidence: "MID",
     title: 'The Steady Climber',
     subtitle: 'Covered Call',
     description: 'Earn steady extra income while you wait for your assets to grow slowly.',
@@ -68,6 +76,7 @@ const STRATEGIES = [
   },
   {
     id: 'moonshot',
+    confidence: 'HIGH',
     title: 'Moonshot Booster',
     subtitle: 'Call Spread',
     description: 'Magnify your gains when you\'re feeling very confident about a price jump.',
@@ -77,17 +86,86 @@ const STRATEGIES = [
 
 export default function TradePage() {
   const [step, setStep] = useState<TradeStep>('goal')
-  const [selectedGoal, setSelectedGoal] = useState<string | null>(null)
-  const [selectedRisk, setSelectedRisk] = useState<string | null>(null)
-  const [tradeAmount, setTradeAmount] = useState('')
-  const [selectedStrategy, setSelectedStrategy] = useState<string | null>(null)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const { balance, isLoading: balanceLoading } = useMockUSDC()
+  const userBalance = parseFloat(balance || '0')
 
-  const handleContinue = () => {
-    if (step === 'goal' && selectedGoal) setStep('risk')
-    else if (step === 'risk' && selectedRisk) setStep('strategy')
-    else if (step === 'strategy' && selectedStrategy) setStep('preview')
-    else if (step === 'preview' && agreedToTerms) setStep('options')
+  const router = useRouter()
+
+  // Zod schema for form validation
+  const formSchema = z.object({
+    goal: z.string().min(1, 'Please select a goal'),
+    risk: z.string().min(1, 'Please select a risk level'),
+    strategy: z.string().min(1, 'Please select a strategy'),
+    amount: z.string()
+      .min(1, 'Amount is required')
+      .refine((val) => !isNaN(parseFloat(val)), { message: 'Please enter a valid number' })
+      .refine((val) => parseFloat(val) > 0, { message: 'Amount must be greater than 0' })
+      .refine((val) => parseFloat(val) >= 1, { message: 'Minimum amount is $1' })
+      .refine((val) => parseFloat(val) <= 10000, { message: 'Maximum amount is $10,000' })
+      .refine((val) => parseFloat(val) <= userBalance, {
+        message: `Insufficient balance. You have $${userBalance.toFixed(2)}`
+      }),
+  })
+
+  type FormData = z.infer<typeof formSchema>
+
+  // React Hook Form
+  const {
+    formState: { errors: formErrors },
+    setValue,
+    watch,
+    trigger,
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      goal: '',
+      risk: '',
+      strategy: '',
+      amount: '',
+    },
+    mode: 'onChange',
+  })
+
+  // Watch form values
+  const selectedGoal = watch('goal')
+  const selectedRisk = watch('risk')
+  const selectedStrategy = watch('strategy')
+  const selectedAmount = watch('amount')
+
+  // Check if current step is valid
+  const isStepValid = () => {
+    switch (step) {
+      case 'goal':
+        return !!selectedGoal && !formErrors.goal
+      case 'risk':
+        return !!selectedRisk && !formErrors.risk
+      case 'strategy':
+        return !!selectedStrategy && !formErrors.strategy
+      case 'preview':
+        return !!selectedAmount && !formErrors.amount && agreedToTerms
+      default:
+        return false
+    }
+  }
+
+  const handleContinue = async () => {
+    // Validate current step fields before proceeding
+    let isValid = false
+
+    if (step === 'goal') {
+      isValid = await trigger('goal')
+      if (isValid) setStep('risk')
+    } else if (step === 'risk') {
+      isValid = await trigger('risk')
+      if (isValid) setStep('strategy')
+    } else if (step === 'strategy') {
+      isValid = await trigger('strategy')
+      if (isValid) setStep('preview')
+    } else if (step === 'preview') {
+      isValid = await trigger('amount')
+      if (isValid && agreedToTerms) setStep('options')
+    }
   }
 
   const handleBack = () => {
@@ -126,10 +204,11 @@ export default function TradePage() {
                 <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
                 <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
                 <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
               </div>
             </div>
             <button
-              onClick={() => window.location.href = '/'}
+              onClick={() => router.back()}
               className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-bold"
             >
               ✕
@@ -147,7 +226,7 @@ export default function TradePage() {
               {GOALS.map((goal) => (
                 <button
                   key={goal.id}
-                  onClick={() => setSelectedGoal(goal.id)}
+                  onClick={() => setValue('goal', goal.id, { shouldValidate: true })}
                   className={`w-full text-left p-6 rounded-3xl border-2 flex items-center gap-5 transition-all ${selectedGoal === goal.id
                     ? 'border-primary bg-primary/5 ring-4 ring-primary/20 shadow-lg'
                     : 'border-slate-100 bg-white hover:border-slate-200'
@@ -169,7 +248,7 @@ export default function TradePage() {
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-50 via-slate-50 pt-10">
             <button
               onClick={handleContinue}
-              disabled={!selectedGoal}
+              disabled={!isStepValid()}
               className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
             >
               Continue
@@ -198,6 +277,7 @@ export default function TradePage() {
                 <div className="h-1.5 w-6 rounded-full bg-primary"></div>
                 <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
                 <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
               </div>
             </div>
             <button
@@ -219,7 +299,7 @@ export default function TradePage() {
               {RISK_LEVELS.map((risk) => (
                 <button
                   key={risk.id}
-                  onClick={() => setSelectedRisk(risk.id)}
+                  onClick={() => setValue('risk', risk.id, { shouldValidate: true })}
                   className={`w-full text-left p-5 rounded-3xl border-2 flex items-center gap-4 transition-all ${selectedRisk === risk.id
                     ? 'border-primary bg-white ring-4 ring-primary/20'
                     : 'border-slate-100 bg-white/50 hover:border-slate-200'
@@ -245,7 +325,7 @@ export default function TradePage() {
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-50">
             <button
               onClick={handleContinue}
-              disabled={!selectedRisk}
+              disabled={!isStepValid()}
               className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
             >
               Continue
@@ -274,6 +354,7 @@ export default function TradePage() {
                 <div className="h-1.5 w-6 rounded-full bg-primary"></div>
                 <div className="h-1.5 w-6 rounded-full bg-primary"></div>
                 <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
+                <div className="h-1.5 w-6 rounded-full bg-slate-200"></div>
               </div>
             </div>
             <button
@@ -295,7 +376,7 @@ export default function TradePage() {
               {STRATEGIES.map((strategy) => (
                 <button
                   key={strategy.id}
-                  onClick={() => setSelectedStrategy(strategy.id)}
+                  onClick={() => setValue('strategy', strategy.id, { shouldValidate: true })}
                   className={`w-full text-left p-5 rounded-3xl border-2 flex gap-4 transition-all ${selectedStrategy === strategy.id
                     ? 'border-primary bg-primary/5 ring-2 ring-primary'
                     : 'border-slate-100 bg-white hover:border-slate-200'
@@ -320,7 +401,7 @@ export default function TradePage() {
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white space-y-4">
             <button
               onClick={handleContinue}
-              disabled={!selectedStrategy}
+              disabled={!selectedGoal}
               className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
             >
               Continue
@@ -332,6 +413,52 @@ export default function TradePage() {
   }
 
   if (step === 'preview') {
+    // Get selected strategy details
+    const selectedStrategyDetails = STRATEGIES.find(s => s.id === selectedStrategy)
+    const selectedGoalDetails = GOALS.find(g => g.id === selectedGoal)
+    const selectedRiskDetails = RISK_LEVELS.find(r => r.id === selectedRisk)
+
+    // Risk profile mapping based on selections
+    const getRiskProfile = () => {
+      const profiles = {
+        'protect-conservative': { label: 'Very Conservative', reward: 'Low', rewardPercent: 30, risk: 'Very Low', riskPercent: 15 },
+        'protect-moderate': { label: 'Conservative', reward: 'Medium', rewardPercent: 50, risk: 'Low', riskPercent: 30 },
+        'protect-aggressive': { label: 'Balanced', reward: 'High', rewardPercent: 70, risk: 'Medium', riskPercent: 50 },
+        'upside-conservative': { label: 'Balanced', reward: 'Medium', rewardPercent: 55, risk: 'Low', riskPercent: 35 },
+        'upside-moderate': { label: 'Moderate', reward: 'High', rewardPercent: 75, risk: 'Medium', riskPercent: 55 },
+        'upside-aggressive': { label: 'Aggressive', reward: 'Very High', rewardPercent: 90, risk: 'High', riskPercent: 75 },
+        'earn-conservative': { label: 'Very Conservative', reward: 'Low', rewardPercent: 25, risk: 'Very Low', riskPercent: 10 },
+        'earn-moderate': { label: 'Conservative', reward: 'Medium', rewardPercent: 45, risk: 'Low', riskPercent: 25 },
+        'earn-aggressive': { label: 'Balanced', reward: 'Medium-High', rewardPercent: 65, risk: 'Medium', riskPercent: 45 },
+      }
+
+      const key = `${selectedGoal}-${selectedRisk}` as keyof typeof profiles
+      return profiles[key] || profiles['protect-moderate']
+    }
+
+    // Scenarios based on strategy
+    const getScenarios = () => {
+      const scenarios = {
+        'safety-shield': {
+          scenario1: { icon: '🛡️', title: 'Market Drops', description: 'Protected by your shield strategy', emoji: '✓', bg: 'bg-primary/10' },
+          scenario2: { icon: '📊', title: 'Market Stable', description: 'Minimal loss from premium paid', emoji: '➖', bg: 'bg-slate-100' },
+        },
+        'steady-climber': {
+          scenario1: { icon: '💰', title: 'Market Stable', description: 'Earn steady premium income', emoji: '✓', bg: 'bg-green-100' },
+          scenario2: { icon: '📈', title: 'Market Rises Moderately', description: 'Keep premium + asset gains', emoji: '✓', bg: 'bg-primary/10' },
+        },
+        'moonshot': {
+          scenario1: { icon: '🚀', title: 'Market Rises', description: 'Magnified upside potential', emoji: '📈', bg: 'bg-purple-100' },
+          scenario2: { icon: '📉', title: 'Market Drops', description: 'Limited downside exposure', emoji: '⚠️', bg: 'bg-orange-100' },
+        },
+      }
+
+      return scenarios[selectedStrategy as keyof typeof scenarios] || scenarios['safety-shield']
+    }
+
+    const riskProfile = getRiskProfile()
+    const scenarios = getScenarios()
+
     return (
       <IOSPageTransition>
         <div className="fixed inset-0 w-screen h-screen flex flex-col bg-white z-[9999]">
@@ -345,6 +472,7 @@ export default function TradePage() {
             </button>
             <div className="flex-1">
               <div className="flex gap-1 justify-center">
+                <div className="h-1.5 w-6 rounded-full bg-primary"></div>
                 <div className="h-1.5 w-6 rounded-full bg-primary"></div>
                 <div className="h-1.5 w-6 rounded-full bg-primary"></div>
                 <div className="h-1.5 w-6 rounded-full bg-primary"></div>
@@ -370,25 +498,27 @@ export default function TradePage() {
             <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 mb-6">
               <div className="flex items-center justify-between mb-6">
                 <span className="text-xs font-black uppercase text-slate-400">Risk Profile</span>
-                <span className="bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded-full uppercase">Balanced</span>
+                <span className="bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded-full uppercase">
+                  {riskProfile.label}
+                </span>
               </div>
               <div className="space-y-6">
                 <div>
                   <div className="flex justify-between items-end mb-2">
                     <span className="text-sm font-bold text-slate-600">Potential Reward</span>
-                    <span className="text-xl font-black text-primary">High</span>
+                    <span className="text-xl font-black text-primary">{riskProfile.reward}</span>
                   </div>
                   <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                    <div className="bg-primary h-full w-[85%]"></div>
+                    <div className="bg-primary h-full transition-all duration-500" style={{ width: `${riskProfile.rewardPercent}%` }}></div>
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between items-end mb-2">
                     <span className="text-sm font-bold text-slate-600">Potential Risk</span>
-                    <span className="text-xl font-black text-purple-500">Low</span>
+                    <span className="text-xl font-black text-purple-500">{riskProfile.risk}</span>
                   </div>
                   <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                    <div className="bg-purple-500 h-full w-[30%]"></div>
+                    <div className="bg-purple-500 h-full transition-all duration-500" style={{ width: `${riskProfile.riskPercent}%` }}></div>
                   </div>
                 </div>
               </div>
@@ -396,25 +526,68 @@ export default function TradePage() {
 
             {/* Scenarios */}
             <div className="bg-slate-50 rounded-3xl border border-slate-100 overflow-hidden mb-6">
-              <div className="p-4 border-b border-slate-200 flex items-center gap-4">
-                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                  🛡️
+              <div className={`p-4 border-b border-slate-200 flex items-center gap-4`}>
+                <div className={`w-10 h-10 ${scenarios.scenario1.bg} rounded-xl flex items-center justify-center`}>
+                  {scenarios.scenario1.icon}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-black text-slate-900">Market Drops</p>
-                  <p className="text-[11px] font-bold text-slate-500 mt-1">Protected by your shield strategy</p>
+                  <p className="text-sm font-black text-slate-900">{scenarios.scenario1.title}</p>
+                  <p className="text-[11px] font-bold text-slate-500 mt-1">{scenarios.scenario1.description}</p>
                 </div>
-                <span className="text-primary">✓</span>
+                <span className="text-primary">{scenarios.scenario1.emoji}</span>
               </div>
               <div className="p-4 flex items-center gap-4">
-                <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                  🚀
+                <div className={`w-10 h-10 ${scenarios.scenario2.bg} rounded-xl flex items-center justify-center`}>
+                  {scenarios.scenario2.icon}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-black text-slate-900">Market Rises</p>
-                  <p className="text-[11px] font-bold text-slate-500 mt-1">Unlimited upside potential</p>
+                  <p className="text-sm font-black text-slate-900">{scenarios.scenario2.title}</p>
+                  <p className="text-[11px] font-bold text-slate-500 mt-1">{scenarios.scenario2.description}</p>
                 </div>
-                <span className="text-purple-500">📈</span>
+                <span className="text-purple-500">{scenarios.scenario2.emoji}</span>
+              </div>
+            </div>
+
+            {/* Amount Input */}
+            <div className="mb-8 bg-card border border-border rounded-3xl p-6 shadow-card">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-foreground">
+                  Trade Amount (USDC)
+                </h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">Balance:</span>
+                  {balanceLoading ? (
+                    <div className="w-16 h-4 bg-muted animate-pulse rounded" />
+                  ) : (
+                    <span className="text-sm font-bold text-primary">
+                      ${userBalance.toFixed(2)}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-foreground">$</span>
+                <input
+                  type="number"
+                  value={selectedAmount}
+                  onChange={(e) => setValue('amount', e.target.value, { shouldValidate: true })}
+                  placeholder="0.00"
+                  min="1"
+                  max={Math.min(10000, userBalance)}
+                  step="0.01"
+                  className={`w-full pl-10 pr-4 py-4 bg-muted border-2 rounded-2xl text-lg font-bold text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors ${formErrors.amount ? 'border-red-500 focus:border-red-600' : 'border-border focus:border-primary'
+                    }`}
+                />
+              </div>
+              {formErrors.amount && (
+                <p className="text-xs text-red-500 mt-2 flex items-center gap-1">
+                  <ExclamationmarkCircle width={12} />
+                  {formErrors.amount.message}
+                </p>
+              )}
+              <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
+                <span>Min: $1</span>
+                <span>Max: ${Math.min(10000, userBalance).toFixed(2)}</span>
               </div>
             </div>
 
@@ -433,8 +606,18 @@ export default function TradePage() {
           {/* Footer */}
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white space-y-4">
             <button
-              onClick={() => setStep('options')}
-              disabled={!agreedToTerms}
+              onClick={() => {
+                const selectedStrategyObj = STRATEGIES.find(s => s.id === selectedStrategy)
+                const profile = {
+                  goal: selectedGoal || 'protect',
+                  riskComfort: selectedRisk || 'conservative',
+                  confidence: selectedStrategyObj?.confidence || 'MID',
+                  amount: parseFloat(selectedAmount) || 100,
+                }
+                console.log(profile)
+                handleContinue()
+              }}
+              disabled={!isStepValid()}
               className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none"
             >
               Find Options like my References 🔍
@@ -445,14 +628,17 @@ export default function TradePage() {
     )
   }
 
-
   if (step === 'options') {
+    const selectedStrategyObj = STRATEGIES.find(s => s.id === selectedStrategy)
+
     const profile = {
       goal: selectedGoal || 'protect',
       riskComfort: selectedRisk || 'conservative',
-      confidence: 'mid',
-      amount: parseFloat(tradeAmount) || 100,
+      confidence: selectedStrategyObj?.confidence || 'MID',
+      amount: parseFloat(selectedAmount) || 100,
     }
+
+    console.log(profile);
 
     return (
       <OptionsDisplay
@@ -510,13 +696,13 @@ export default function TradePage() {
             {/* Buttons */}
             <div className="w-full space-y-4">
               <button
-                onClick={() => window.location.href = '/profile'}
+                onClick={() => router.push('/profile')}
                 className="w-full py-4 px-6 bg-[#4CC658] text-slate-900 font-bold rounded-2xl shadow-[0_4px_0_0_#3a9a48] active:shadow-none active:translate-y-[4px] transition-all"
               >
                 View Portfolio
               </button>
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => router.push('/')}
                 className="w-full text-slate-400 hover:text-slate-600 font-black text-lg py-2"
               >
                 Awesome!
