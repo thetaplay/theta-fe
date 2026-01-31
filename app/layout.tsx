@@ -39,6 +39,9 @@ export const metadata: Metadata = {
     ],
     apple: '/logo/Logo-Nawasena.png',
   },
+  other: {
+    'base:app_id': '697dccf02aafa0bc9ad8a271',
+  },
 }
 
 export const viewport: Viewport = {
