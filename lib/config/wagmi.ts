@@ -1,12 +1,12 @@
-import { http, createConfig } from 'wagmi'
+import { http, createConfig, createStorage, cookieStorage } from 'wagmi'
 import { baseSepolia, base } from 'wagmi/chains'
-import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
+import { coinbaseWallet, injected } from 'wagmi/connectors'
 
 export const config = createConfig({
     chains: [baseSepolia, base],
     connectors: [
         coinbaseWallet({
-            appName: 'ThetaPlay Options',
+            appName: 'Nawasena - Trading Options',
             preference: 'smartWalletOnly', // Coinbase Smart Wallet
         }),
         injected(),
@@ -16,6 +16,9 @@ export const config = createConfig({
         [base.id]: http(),
     },
     ssr: true,
+    storage: createStorage({
+        storage: cookieStorage,
+    }),
 })
 
 declare module 'wagmi' {
