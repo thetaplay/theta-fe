@@ -32,7 +32,7 @@ return Response.json({
     "ogTitle": "Nawasena",
     "ogDescription": "option trade simple and gamefi",
     "ogImageUrl": `${URL}/logo/Logo-Nawasena.png`,
-    "noindex": true
+    "noindex": false
   }
 }); // see the next step for the manifest_json_object
 }
