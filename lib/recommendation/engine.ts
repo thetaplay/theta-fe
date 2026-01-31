@@ -139,12 +139,13 @@ export async function generateRecommendations(
             const expiry = calculateExpiry(profile.confidence)
             const daysToExpiry = Math.floor((expiry - Date.now() / 1000) / 86400)
 
-            // 5. Estimate premium
+            // 5. Estimate premium (now budget-aware for retail users)
             const premium = estimatePremium({
                 currentPrice,
                 strike,
                 daysToExpiry,
                 optionType,
+                userBudget: profile.amount, // Pass user budget for retail-friendly pricing
             })
 
             // 6. Calculate additional metadata
