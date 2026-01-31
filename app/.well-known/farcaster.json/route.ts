@@ -8,9 +8,9 @@ export async function GET() {
 const URL = process.env.NEXT_PUBLIC_URL as string;
 return Response.json({
   "accountAssociation": {  // these will be added in step 5
-    "header": "",
-    "payload": "",
-    "signature": ""
+    "header": "eyJmaWQiOjIzMTM5MDEsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgxM0YyNTBlOGI4OGI4MTQzQ2IzNzc1OTcyOTQ2YkQ0MDMzMEM5MTFBIn0",
+    "payload": "eyJkb21haW4iOiJuYXdhc2VuYWJhc2UubmV0bGlmeS5hcHAifQ",
+    "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEHilzcRoYatOp81FmgsmBy0C0ecZkUnI1nxAgFQRC60sncjfpQbhHv34Skc2rL1pEVlPRaSAmrxgz5Mw3F-PWtXHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   },
   "miniapp": {
     "version": "1",
