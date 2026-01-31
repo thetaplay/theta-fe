@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     apple: '/logo/Logo-Nawasena.png',
   },
   other: {
-    'base:app_id': '697dccf02aafa0bc9ad8a271',
+    'base:app_id': '697dd782c6a03f3fe39cb59c',
   },
 }
 
