@@ -14,31 +14,30 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'ThetaPlay - Trade Options',
-  description: 'Trade options on ThetaPlay',
-  generator: 'ThetaPlay',
-  applicationName: 'ThetaPlay',
+  title: 'Nawasena - Trade Options',
+  description: 'Trade options on Nawasena',
+  generator: 'Nawasena',
+  applicationName: 'Nawasena',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'ThetaPlay',
+    title: 'Nawasena',
   },
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
+        url: '/logo/Logo-Nawasena.png',
         media: '(prefers-color-scheme: light)',
       },
       {
-        url: '/icon-dark-32x32.png',
+        url: '/logo/Logo-Nawasena.png',
         media: '(prefers-color-scheme: dark)',
       },
       {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: '/logo/Logo-Nawasena.png',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/logo/Logo-Nawasena.png',
   },
 }
 

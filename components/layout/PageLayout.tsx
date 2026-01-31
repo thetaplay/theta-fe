@@ -15,6 +15,7 @@ interface PageLayoutProps {
     showBack?: boolean
     onBack?: () => void
     showWallet?: boolean // Option to hide wallet if needed
+    showLogo?: boolean // Show logo instead of title
     children: ReactNode
 }
 
@@ -26,6 +27,7 @@ export function PageLayout({
     showBack = false,
     onBack,
     showWallet = true, // Show wallet by default
+    showLogo = false, // Show logo by default on home page
     children
 }: PageLayoutProps) {
     const { isConnected } = useAccount()
@@ -43,7 +45,7 @@ export function PageLayout({
 
     const content = (
         <div className="w-full h-screen flex flex-col bg-gray-100">
-            <IOSHeader showBack={showBack} onBack={onBack} title={title} subtitle={subtitle} rightContent={headerRightContent} />
+            <IOSHeader showBack={showBack} onBack={onBack} title={title} subtitle={subtitle} rightContent={headerRightContent} showLogo={showLogo} />
             <div className="flex-1 overflow-y-auto p-4 pt-16 pb-24 mt-0">
                 <div className="space-y-4 mt-4">
                     {children}

@@ -10,7 +10,7 @@ import { PageLayout } from '@/components/layout/PageLayout'
 export default function HomePage() {
   const router = useRouter()
   return (
-    <PageLayout title="Theta Play">
+    <PageLayout title="Nawasena" showLogo={true}>
       {/* Highlight Event Card */}
       <div className="mb-6 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/40 to-purple-800/40 rounded-3xl blur-xl" />

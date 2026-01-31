@@ -1,4 +1,4 @@
-# Frontend Integration Guide - ThetaPlay (Wagmi + Viem)
+# Frontend Integration Guide - Nawasena (Wagmi + Viem)
 
 > Modern Web3 integration using **wagmi v2** and **viem** for type-safe, efficient React development
 

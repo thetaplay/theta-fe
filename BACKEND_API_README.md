@@ -1,8 +1,8 @@
-# ThetaPlay Backend API - Setup Guide
+# Nawasena Backend API - Setup Guide
 
-## 📋 Overview
+## Overview
 
-Backend API yang terintegrasi dengan ThetaPlay smart contracts untuk:
+Backend API yang terintegrasi dengan Nawasena smart contracts untuk:
 - Option recommendation engine
 - Order signing untuk market maker
 - Oracle price fetching
