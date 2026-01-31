@@ -283,7 +283,7 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
           </div>
 
           {/* Action Buttons */}
-          {position.status === 'active' && <div className="flex flex-col gap-3">
+          {position.status === 'settled' && <div className="flex flex-col gap-3">
             <button
               onClick={() => handleClaim()}
               disabled={claiming || isPending}
