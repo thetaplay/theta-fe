@@ -15,11 +15,11 @@ return Response.json({
   "miniapp": {
     "version": "1",
     "name": "Nawasena",
-    "homeUrl": "https://697dc8d9404c6541f7202091--nawasenabase.netlify.app",
+    "homeUrl": `${URL}/home`,
     "iconUrl": `${URL}/logo/Logo-Nawasena.png`,
     "splashImageUrl": `${URL}/logo/Logo-Nawasena.png`,
     "splashBackgroundColor": "#000000",
-    "webhookUrl": "https://697dc8d9404c6541f7202091--nawasenabase.netlify.app/webhook",
+    "webhookUrl": `${URL}/webhook`,
     "subtitle": "option trade simple and gamefi",
     "description": "option trade simple and gamefi",
     "screenshotUrls": [
