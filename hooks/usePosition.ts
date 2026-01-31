@@ -72,7 +72,7 @@ export function usePosition(positionId: bigint | undefined) {
         refetch,
         // Helper methods with safety checks
         premiumPaidUSDC: position.premiumPaid ? Number(formatUnits(position.premiumPaid, 6)) : 0,
-        payoutUSDC: position.payout ? Number(formatUnits(position.payout, 6)) : 0,
+        payoutUSDC: Number(formatUnits(position.payout, 6)),
         claimableUSDC: position.claimable ? Number(formatUnits(position.claimable, 6)) : 0,
         strikePrice: position.strikes && position.strikes.length > 0
             ? Number(formatUnits(position.strikes[0], 18))

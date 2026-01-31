@@ -159,15 +159,15 @@ function PositionCard({
 
     // PnL data for settled positions
     ...(statusText !== 'ACTIVE' && {
-      finalPayout: `$${payoutUSDC.toFixed(2)} USDC`,
+      finalPayout: `$${(payoutUSDC + premiumPaidUSDC).toFixed(2)} USDC`,
       premiumPaid: `-$${premiumPaidUSDC.toFixed(2)}`,
       netOutcome:
-        payoutUSDC - premiumPaidUSDC >= 0
-          ? `+$${(payoutUSDC - premiumPaidUSDC).toFixed(2)}`
-          : `-$${Math.abs(payoutUSDC - premiumPaidUSDC).toFixed(2)}`,
+        payoutUSDC >= 0
+          ? `+$${payoutUSDC.toFixed(2)}`
+          : `-$${Math.abs(payoutUSDC).toFixed(2)}`,
       roi:
         premiumPaidUSDC > 0
-          ? `${(((payoutUSDC - premiumPaidUSDC) / premiumPaidUSDC) * 100).toFixed(0)}% ROI`
+          ? `${((payoutUSDC / premiumPaidUSDC) * 100).toFixed(0)}% ROI`
           : '0% ROI',
       collateral: `$${premiumPaidUSDC.toFixed(2)} USDC`,
       protectionLevel: `$${strikePrice.toFixed(2)} ${position.underlyingAsset}`,
@@ -214,18 +214,10 @@ function PositionCardUI({ position }: { position: Position }) {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold text-foreground">{position.title}</h3>
-              <Badge
-                className={cn(
-                  'capitalize',
-                  position.status === 'active'
-                    ? 'bg-green-100 text-green-600'
-                    : position.status === 'settled'
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-yellow-100 text-yellow-600'
-                )}
-              >
+
+              <span className={cn("text-[11px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest border", position.status === 'active' ? 'bg-yellow-50 border-yellow-200 text-yellow-600' : position.status === 'settling' ? 'bg-orange-50 border-orange-200 text-orange-600' : position.status === 'settled' ? 'bg-green-50 border-green-200 text-green-600' : 'bg-blue-50 border-blue-200 text-blue-600')}>
                 {position.status}
-              </Badge>
+              </span>
             </div>
 
             {position.endsIn && (

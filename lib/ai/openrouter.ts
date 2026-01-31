@@ -32,26 +32,62 @@ export async function generateExplanation(params: {
     const expiryDate = new Date(expiry * 1000).toLocaleDateString()
     const daysLeft = Math.max(0, Math.floor((expiry * 1000 - Date.now()) / (1000 * 60 * 60 * 24)))
 
-    const prompt = `You're explaining this to someone who's never traded before. Use SUPER simple language like you're texting a friend.
+    const prompt = `You're explaining this to someone who's NEVER traded before.
+                    Use SUPER simple language like texting a close friend. No formal tone.
 
-Position: ${positionType === 'CALL' ? 'BETTING price goes UP' : 'PROTECTION if price goes DOWN'}
-- You paid: $${premiumPaid}
-- Target price: $${strike}
-- Current price: $${currentPrice}
-- Days left: ${daysLeft}
+                    Context:
+                    - This is about a position on ${asset}.
+                    - Status right now: ${status}
 
-Return JSON with 3 SUPER SHORT sections (max 30 words each):
-{
-  "whatIsThis": "Explain like telling a story to a 10-year-old. Use CONCRETE everyday analogies (lottery ticket, car insurance, discount coupon). NEVER use technical words like 'strike', 'premium', 'option', 'contract'.",
-  "whyChosen": "Why did I buy this? What am I hoping happens? Talk like chatting with a friend, NOT formal.",
-  "whatToWatch": "What should I check daily? Give 1-2 simple things. Examples: 'Check ${asset} price in app' or 'See how many days left'."
-}
+                    Human-friendly summary (avoid technical words):
+                    - Type: ${positionType === 'CALL' ? 'I’m hoping the price goes UP' : 'I’m protecting myself if price goes DOWN'}
+                    - Money I paid upfront: $${premiumPaid}
+                    - My target price line: $${strike}
+                    - Current price now: $${currentPrice}
+                    - Days left: ${daysLeft}
+                    - Date it ends: ${expiryDate}
 
-IMPORTANT RULES:
-- Use "you/I" not formal language
-- AVOID words: option, strike, premium, contract, expiry
-- Use relatable analogies (like buying a raffle ticket, paying for parking, getting a coupon)
-- Be SUPER casual, like texting a buddy`
+                    STATUS RULES (MUST FOLLOW):
+                    ${status === 'ACTIVE'
+            ? `ACTIVE = It's still running.
+                    - Say it's still "ongoing" and nothing is final yet.
+                    - Tell me what to watch before it ends: price vs my target line + days left.
+                    - Add a tiny reminder: worst case I only lose the upfront money I paid.`
+            : status === 'SETTLED'
+                ? `SETTLED = It's finished and the result is locked.
+                    - Say it's already "finished" and the outcome is decided.
+                    - Tell me what to do next: if there is money to take, I should "claim" it.
+                    - Do NOT talk like it can still change, because it can’t.`
+                : `CLAIMED = It's finished and I already took the result.
+                    - Say it's done and I've already collected what I can.
+                    - Tell me there's nothing else to do now (just record it / learn from it).
+                    - Do NOT tell me to claim again.`
+        }
+
+                    OUTPUT FORMAT:
+                    Return ONLY valid JSON. No markdown. No extra text.
+                    3 sections, each MAX 30 words:
+                    {
+                    "whatIsThis": "...",
+                    "whyChosen": "...",
+                    "whatToWatch": "..."
+                    }
+
+                    STYLE RULES:
+                    - Use "I / you" language, casual
+                    - Use everyday analogies: coupon, raffle ticket, insurance, booking fee
+                    - Keep it SHORT and punchy, like chat
+
+                    BANNED WORDS (never use them, even once):
+                    option, strike, premium, contract, expiry, settle, settled, claimed
+
+                    Extra:
+                    - In "whatToWatch", include 1 action that matches the status:
+                    - ACTIVE: "check price + days left"
+                    - SETTLED: "go claim if available"
+                    - CLAIMED: "no action, just note result"
+            `;
+
 
     try {
         const completion = await openrouter.chat.completions.create({

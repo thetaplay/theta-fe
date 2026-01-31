@@ -1,8 +1,8 @@
 import { useWriteContract, useWaitForTransactionReceipt, useAccount } from 'wagmi'
 import { CONTRACTS, ABIS } from '@/lib/blockchain/contracts'
-import { parseUnits } from 'viem'
 import { useState, useEffect } from 'react'
 import { publicClient } from '@/lib/blockchain/client'
+import { parseUnits, maxUint256 } from 'viem'
 
 export function useBuyOption() {
     const { address } = useAccount()
@@ -26,33 +26,31 @@ export function useBuyOption() {
         setError(null)
 
         try {
-            // Check current allowance
-            const allowance = await publicClient.readContract({
+            const allowance = (await publicClient.readContract({
                 address: CONTRACTS.MOCK_USDC,
                 abi: ABIS.MockUSDC,
                 functionName: 'allowance',
                 args: [address, CONTRACTS.MOCK_OPTION_BOOK],
+            })) as bigint
+
+            const requiredAmount = parseUnits(amount.toString(), 6)
+
+            // kalau sudah cukup, skip approve
+            if (allowance >= requiredAmount) return false
+
+            // kalau belum cukup, approve "infinite" biar nextnya nggak approve lagi
+            setStep('approving')
+
+            await writeContract({
+                address: CONTRACTS.MOCK_USDC,
+                abi: ABIS.MockUSDC,
+                functionName: 'approve',
+                args: [CONTRACTS.MOCK_OPTION_BOOK, maxUint256],
             })
 
-            const requiredAmount = parseUnits(amount.toString(), 6) // USDC has 6 decimals
-
-            if ((allowance as bigint) < requiredAmount) {
-                // Need approval
-                setStep('approving')
-
-                await writeContract({
-                    address: CONTRACTS.MOCK_USDC,
-                    abi: ABIS.MockUSDC,
-                    functionName: 'approve',
-                    args: [CONTRACTS.MOCK_OPTION_BOOK, requiredAmount],
-                })
-
-                return true // Approval needed and requested
-            }
-
-            return false // Already approved
+            return true
         } catch (err: any) {
-            setError(err.message || 'Approval failed')
+            setError(err?.message || 'Approval failed')
             setStep('error')
             throw err
         }
