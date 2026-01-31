@@ -16,7 +16,7 @@ return Response.json({
     "version": "1",
     "name": "Nawasena",
     "homeUrl": "https://697dc8d9404c6541f7202091--nawasenabase.netlify.app",
-    "iconUrl": `${URL}/logo/logo/social-flow.png`,
+    "iconUrl": `${URL}/logo/Logo-Nawasena.png`,
     "splashImageUrl": `${URL}/logo/Logo-Nawasena.png`,
     "splashBackgroundColor": "#000000",
     "webhookUrl": "https://697dc8d9404c6541f7202091--nawasenabase.netlify.app/webhook",
