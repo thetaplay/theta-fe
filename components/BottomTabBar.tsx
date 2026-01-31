@@ -2,8 +2,9 @@
 
 import React from "react"
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { HouseFill, BoltFill, Calendar, BookFill, PersonFill } from './sf-symbols'
+import { useAccount } from "wagmi"
 
 interface TabItem {
   icon: React.ReactNode
@@ -42,7 +43,9 @@ const tabs: TabItem[] = [
 ]
 
 export function BottomTabBar() {
+  const router = useRouter()
   const pathname = usePathname()
+  const { isConnected } = useAccount()
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 pointer-events-none">
@@ -54,9 +57,13 @@ export function BottomTabBar() {
 
             if (isSpecial) {
               return (
-                <Link
+                <button
                   key={tab.href}
-                  href={tab.href}
+                  onClick={() => {
+                    if (!isConnected) alert("Please connect your wallet to access the Trade feature.")
+                    else
+                      router.push(tab.href)
+                  }}
                   className="flex flex-col items-center -mt-8"
                 >
                   <div className="relative group">
@@ -70,7 +77,7 @@ export function BottomTabBar() {
                   <span className="text-xs font-semibold text-foreground mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     {tab.label}
                   </span>
-                </Link>
+                </button>
               )
             }
 
@@ -81,16 +88,14 @@ export function BottomTabBar() {
                 className="flex flex-col items-center justify-center gap-1 flex-1 py-2 rounded-xl active:bg-muted/50 transition-colors duration-150"
               >
                 <div
-                  className={`transition-colors duration-200 ${
-                    isActive ? 'text-[#4CC658]' : 'text-muted-foreground'
-                  }`}
+                  className={`transition-colors duration-200 ${isActive ? 'text-[#4CC658]' : 'text-muted-foreground'
+                    }`}
                 >
                   {tab.icon}
                 </div>
                 <span
-                  className={`text-xs font-medium transition-colors duration-200 ${
-                    isActive ? 'text-[#4CC658] font-semibold' : 'text-muted-foreground'
-                  }`}
+                  className={`text-xs font-medium transition-colors duration-200 ${isActive ? 'text-[#4CC658] font-semibold' : 'text-muted-foreground'
+                    }`}
                 >
                   {tab.label}
                 </span>
