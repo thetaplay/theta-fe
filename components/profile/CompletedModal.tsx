@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useClaimPosition } from '@/hooks/useClaimPosition'
 import { toast } from 'sonner'
 import IOSPageTransition from '../layout/IOSPageTransition'
+import { cn } from '@/lib/utils'
 
 interface Position {
   id: string
@@ -217,7 +218,7 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
             <div className="space-y-1">
               <h2 className="text-2xl font-extrabold text-foreground">{position.title}</h2>
               <div className="flex items-center gap-2">
-                <span className="bg-slate-100 text-slate-600 text-[11px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest border border-slate-200">
+                <span className={cn("text-[11px] px-2.5 py-1 rounded-full font-bold uppercase tracking-widest border", position.status === 'active' ? 'bg-yellow-50 border-yellow-200 text-yellow-600' : position.status === 'settling' ? 'bg-orange-50 border-orange-200 text-orange-600' : position.status === 'settled' ? 'bg-green-50 border-green-200 text-green-600' : 'bg-blue-50 border-blue-200 text-blue-600')}>
                   {position.status}
                 </span>
                 <span className="text-xs font-semibold text-muted-foreground">{position.settledDate || 'Mar 24, 2024'}</span>
@@ -232,12 +233,12 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
           </div>
 
           {/* Final Outcome Card */}
-          <div className={`bg-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-50/50 border border-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-100 rounded-[2rem] p-6 mb-8`}>
+          <div className={cn(`bg-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-50/50 border border-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-100 rounded-[2rem] p-6 mb-8`)}>
             <div className="flex items-center gap-2 mb-4">
-              <div className={`w-8 h-8 rounded-full bg-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-100 flex items-center justify-center`}>
-                <CheckmarkCircleFill size={20} className={`text-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-600`} />
+              <div className={cn(`w-8 h-8 rounded-full bg-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-100 flex items-center justify-center`)}>
+                <CheckmarkCircleFill size={20} className={cn(`text-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-600`)} />
               </div>
-              <span className={`text-sm font-bold text-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-700`}>Final Outcome</span>
+              <span className={cn(`text-sm font-bold text-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-700`)}>Final Outcome</span>
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
@@ -248,11 +249,11 @@ export function CompletedModal({ position, isClosing, onClose, onExplain }: Comp
                 <span className="text-muted-foreground font-medium">Premium Paid</span>
                 <span className="text-lg font-bold text-foreground">{position.premiumPaid || '-$10.00'}</span>
               </div>
-              <div className={`h-px bg-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-200/50 my-2`}></div>
+              <div className={cn(`h-px bg-${position.netOutcome?.startsWith('+') ? 'green' : 'red'}-200/50 my-2`)}></div>
               <div className="flex justify-between items-center">
                 <span className="text-foreground font-extrabold">Net Outcome</span>
                 <div className="text-right">
-                  <span className={`text-2xl font-extrabold ${position.netOutcome?.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>{position.netOutcome || '+$90.00'}</span>
+                  <span className={cn(`text-2xl font-extrabold ${position.netOutcome?.startsWith('+') ? 'text-green-600' : 'text-red-600'}`)}>{position.netOutcome || '+$90.00'}</span>
                   <p className="text-xs font-bold">{position.roi || '900% ROI'}</p>
                 </div>
               </div>
