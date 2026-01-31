@@ -159,15 +159,15 @@ function PositionCard({
 
     // PnL data for settled positions
     ...(statusText !== 'ACTIVE' && {
-      finalPayout: `$${payoutUSDC.toFixed(2)} USDC`,
+      finalPayout: `$${(payoutUSDC + premiumPaidUSDC).toFixed(2)} USDC`,
       premiumPaid: `-$${premiumPaidUSDC.toFixed(2)}`,
       netOutcome:
-        payoutUSDC - premiumPaidUSDC >= 0
-          ? `+$${(payoutUSDC - premiumPaidUSDC).toFixed(2)}`
-          : `-$${Math.abs(payoutUSDC - premiumPaidUSDC).toFixed(2)}`,
+        payoutUSDC >= 0
+          ? `+$${payoutUSDC.toFixed(2)}`
+          : `-$${Math.abs(payoutUSDC).toFixed(2)}`,
       roi:
         premiumPaidUSDC > 0
-          ? `${(((payoutUSDC - premiumPaidUSDC) / premiumPaidUSDC) * 100).toFixed(0)}% ROI`
+          ? `${((payoutUSDC / premiumPaidUSDC) * 100).toFixed(0)}% ROI`
           : '0% ROI',
       collateral: `$${premiumPaidUSDC.toFixed(2)} USDC`,
       protectionLevel: `$${strikePrice.toFixed(2)} ${position.underlyingAsset}`,
