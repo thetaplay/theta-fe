@@ -25,7 +25,7 @@ return Response.json({
     "screenshotUrls": [
       `${URL}/logo/Logo-Nawasena.png`
     ],
-    "primaryCategory": "defi",
+    "primaryCategory": "finance",
     "tags": ["finance"],
     "heroImageUrl": `${URL}/logo/Logo-Nawasena.png`,
     "tagline": "option trade simple and gamefi",
