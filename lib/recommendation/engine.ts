@@ -1,6 +1,7 @@
 import { getOraclePrice } from '../blockchain/getOraclePrice'
 import { determineOptionType, calculateStrike, calculateExpiry } from './strategies'
 import { estimatePremium } from './pricing'
+import { profile } from 'console'
 
 export interface UserProfile {
     goal: 'PROTECT_ASSET' | 'CAPTURE_UPSIDE' | 'EARN_SAFELY'
@@ -35,7 +36,8 @@ export interface Recommendation {
  * Creates positions that will definitely be profitable or unprofitable
  */
 export async function generateTestRecommendations(
-    testMode: 'profit' | 'loss'
+    testMode: 'profit' | 'loss',
+    profile: UserProfile
 ): Promise<Recommendation[]> {
     const assets = ['ETH', 'BTC']
     const recommendations: Recommendation[] = []
@@ -75,6 +77,7 @@ export async function generateTestRecommendations(
                 strike,
                 daysToExpiry,
                 optionType,
+                userBudget: profile.amount || 1000,
             })
 
             // 6. Calculate metadata
@@ -117,7 +120,7 @@ export async function generateRecommendations(
     // TEST MODE: Generate profit/loss scenarios for settlement testing
     if (profile.testMode) {
         console.log(`🧪 TEST MODE: Generating ${profile.testMode.toUpperCase()} scenario`)
-        return generateTestRecommendations(profile.testMode)
+        return generateTestRecommendations(profile.testMode, profile)
     }
 
     // NORMAL MODE: For hackathon, we'll generate recommendations for ETH and BTC
