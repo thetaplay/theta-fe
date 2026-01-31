@@ -1,20 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
-let supabase: ReturnType<typeof createClient> | null = null
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
-function getSupabaseClient() {
-    if (supabase) return supabase
-
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (!supabaseUrl || !supabaseKey) {
-        throw new Error('Supabase environment variables are not set')
-    }
-
-    supabase = createClient(supabaseUrl, supabaseKey)
-    return supabase
-}
+export const supabase = createClient(supabaseUrl, supabaseKey)
 
 // Alert types
 export type AlertType = 'EXPIRY_REMINDER' | 'PRICE_MOVE'
@@ -47,7 +36,7 @@ export interface Notification {
 
 // Get active alerts
 export async function getActiveAlerts() {
-    const { data, error } = await getSupabaseClient()
+    const { data, error } = await supabase
         .from('alerts')
         .select('*')
         .eq('enabled', true)
@@ -58,7 +47,7 @@ export async function getActiveAlerts() {
 
 // Get user alerts for a position
 export async function getUserAlerts(userId: string, positionId: number) {
-    const { data, error } = await getSupabaseClient()
+    const { data, error } = await supabase
         .from('alerts')
         .select('*')
         .eq('user_id', userId)
@@ -76,7 +65,7 @@ export async function createAlert(alert: {
     threshold?: number
     hours_before_expiry?: number
 }) {
-    const { data, error } = await getSupabaseClient()
+    const { data, error } = await supabase
         .from('alerts')
         .insert([alert])
         .select()
@@ -88,7 +77,7 @@ export async function createAlert(alert: {
 
 // Update alert
 export async function updateAlert(id: string, updates: Partial<Alert>) {
-    const { data, error } = await getSupabaseClient()
+    const { data, error } = await supabase
         .from('alerts')
         .update(updates)
         .eq('id', id)
@@ -101,7 +90,7 @@ export async function updateAlert(id: string, updates: Partial<Alert>) {
 
 // Delete alert
 export async function deleteAlert(id: string) {
-    const { error } = await getSupabaseClient().from('alerts').delete().eq('id', id)
+    const { error } = await supabase.from('alerts').delete().eq('id', id)
 
     if (error) throw error
 }
@@ -115,7 +104,7 @@ export async function createNotification(notification: {
     title: string
     message: string
 }) {
-    const { data, error } = await getSupabaseClient()
+    const { data, error } = await supabase
         .from('notifications')
         .insert([notification])
         .select()
@@ -127,7 +116,7 @@ export async function createNotification(notification: {
 
 // Get user notifications
 export async function getUserNotifications(userId: string, unreadOnly = false) {
-    let query = getSupabaseClient()
+    let query = supabase
         .from('notifications')
         .select('*')
         .eq('user_id', userId)
@@ -145,7 +134,7 @@ export async function getUserNotifications(userId: string, unreadOnly = false) {
 
 // Mark notification as read
 export async function markNotificationRead(id: string) {
-    const { error } = await getSupabaseClient()
+    const { error } = await supabase
         .from('notifications')
         .update({ read: true })
         .eq('id', id)
@@ -155,7 +144,7 @@ export async function markNotificationRead(id: string) {
 
 // Mark all notifications as read for user
 export async function markAllRead(userId: string) {
-    const { error } = await getSupabaseClient()
+    const { error } = await supabase
         .from('notifications')
         .update({ read: true })
         .eq('user_id', userId)
