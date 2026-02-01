@@ -1,9 +1,9 @@
 import { http, createConfig, createStorage, cookieStorage } from 'wagmi'
-import { baseSepolia, base } from 'wagmi/chains'
+import { baseSepolia } from 'wagmi/chains'
 import { coinbaseWallet, injected } from 'wagmi/connectors'
 
 export const config = createConfig({
-    chains: [baseSepolia, base],
+    chains: [baseSepolia],
     connectors: [
         coinbaseWallet({
             appName: 'Nawasena - Trading Options',
